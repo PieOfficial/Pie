@@ -1,1 +1,0 @@
-gcc src/main.cpp

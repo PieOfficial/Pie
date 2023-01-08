@@ -1,5 +1,8 @@
 #include <iostream>
+#include <fstream>
 #include <string>
+
+#include "core/parser.h"
 
 using namespace std;
 
@@ -14,10 +17,8 @@ pair<string, string> splitInTwo(string val) {
     return make_pair(val, arg);
 }
 
-int main() {
-    string cmd = "HELLO:WORLD";
 
-    pair<string, string> pr = splitInTwo(cmd);
+int main() {
 
     //cout << pr.first  << "\n";
     //cout << pr.second << "\n";
