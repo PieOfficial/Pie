@@ -1,7 +1,11 @@
 #ifndef PARSER_CLASS_H // include guard
 #define PARSER_CLASS_H
 
-namespace N
+#include <string>
+
+using namespace std;
+
+namespace parser
 {
     class parser_class
     {

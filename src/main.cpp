@@ -2,23 +2,19 @@
 #include <fstream>
 #include <string>
 
+
+
 #include "core/parser.h"
 
+using namespace parser;
 using namespace std;
 
-// val is passed by value
-pair<string, string> splitInTwo(string val) {
-    string arg;
-    string::size_type pos = val.find(':');
-    if(val.npos != pos) {
-        arg = val.substr(pos + 1);
-        val = val.substr(0, pos);
-    }
-    return make_pair(val, arg);
-}
 
 
 int main() {
+    parser_class parser_class;
+    parser_class.parser_file("test.pie");
+
 
     //cout << pr.first  << "\n";
     //cout << pr.second << "\n";
