@@ -1,8 +1,7 @@
-#include <iostream>
 #include <fstream>
-#include <string>
+#include <iostream>
 #include <sstream>
-
+#include <string>
 
 #include "argparse.hpp"
 #include "core/parser.h"
@@ -10,15 +9,31 @@
 using namespace parser;
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
+  argparse::ArgumentParser program("test");
 
+  program.add_argument("--build")
+      .help("build root dir")
+      .default_value(false)
+      .implicit_value(true);
 
-    parser_class parser_class;
-    parser_class.parser_file("test.pie");
+  try {
+    program.parse_args(argc, argv);
+  } catch (const std::runtime_error& err) {
+    std::cerr << err.what() << std::endl;
+    std::cerr << program;
+    std::exit(1);
+  }
 
+  if (program["--build"] == true) {
+    std::cout << "Building" << std::endl;
+  }
 
-    //cout << pr.first  << "\n";
-    //cout << pr.second << "\n";
+  // parser_class parser_class;
+  // parser_class.parser_file("test.pie");
 
-    return 0;
+  // cout << pr.first  << "\n";
+  // cout << pr.second << "\n";
+
+  return 0;
 }

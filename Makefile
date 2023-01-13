@@ -18,7 +18,7 @@ LFLAGS =
 OUTPUT	:= output
 
 # define source directory
-SRC		:= src src/core
+SRC		:= src src/core src/script
 
 # define include directory
 INCLUDE	:= include
