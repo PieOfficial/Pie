@@ -1,0 +1,11 @@
+echo("Pie")
+echo(9+9)
+
+set(g,"pie")
+set(o,"pie")
+
+echo(9+9*7/2*5+65)
+
+if("pie" is "pie")
+echo("yay it works!")
+endif()
