@@ -7,5 +7,5 @@ using namespace std;
 
 void files_class::do_something()
 {
-    cout << "Doing something!" << endl;
+
 }
