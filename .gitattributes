@@ -3,6 +3,6 @@
 *.cpp linguist-detectable=false
 * linguist-vendored
 *.pie linguist-vendored=false
-*.pie linguist-language=Java
+*.pie linguist-language=pie
 
 
