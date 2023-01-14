@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <ctime>
 
 #include "argparse.hpp"
 #include "core/parser.h"
@@ -28,18 +29,8 @@ int main(int argc, char* argv[]) {
 
   if (program["--build"] == true) {
   //   std::cout << "Building" << std::endl;
-  //   string line;
-  //   ifstream myfile;
-  //   myfile.open("build.pie");
-
-  //  if(!myfile.is_open()) {
-  //     perror("Error open");
-  //     exit(EXIT_FAILURE);
-  //  }
-  //   while(getline(myfile, line)) {
-  //    run_script(line);
-  //   }
-          std::string r;
+        std::clock_t c_start = std::clock();
+        std::string r;
         std::ifstream ifile("build.pie");
         while(ifile.good()) r += ifile.get();
         if(!r.empty()) r.pop_back();
@@ -48,13 +39,14 @@ int main(int argc, char* argv[]) {
             std::cout << i.first << " args: " << i.second.arglist.size() << " lines: " << i.second.lines.size() << "\n";
             std::cout << run_script(i.first,labels) << "\n";
         }
+        std::clock_t c_end = std::clock();
+
+double time_elapsed_ms = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
+std::cout << "CPU time used: " << time_elapsed_ms << " ms\n";
   }
 
   // parser_class parser_class;
   // parser_class.parser_file("test.pie");
-
-  // cout << pr.first  << "\n";
-  // cout << pr.second << "\n";
 
   return 0;
 }
