@@ -1,5 +1,8 @@
 # Auto detect text files and perform LF normalization
 #* text=auto
-*.pie linguist-language=Pie
 *.cpp linguist-detectable=false
+* linguist-vendored
+*.js linguist-vendored=false
+*.pie linguist-language=Pie
+
 
