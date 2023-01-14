@@ -29,11 +29,11 @@ using namespace std;
 int Filter::main_loop(Filter* p) {
   for(;;) {
     try {
-      p->start();
-      while (p->read()) {
-        p->compute();
-        p->write();
-      }
+      p->start(); 
+      // while (p->read()) {
+      //   p->compute();
+      //   p->write();
+      // }
       return p->result();
     }
     catch (Filter::Retry& m) {
