@@ -403,6 +403,8 @@ std::map<std::string,ScriptBuiltin> script_builtins = {
                 out << i.string;
             else if(i.type == ScriptVariable::Type::Number)
                 out << i.number;
+            // else if(i.type == ScriptVariable::Type::Name)
+            //      std::cout <<  settings.variables[i.string] << "\n";
             else 
                 return "unexpected symbol: " + i.name;
         }

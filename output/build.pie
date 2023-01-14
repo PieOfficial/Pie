@@ -1,0 +1,8 @@
+echo("test")
+echo(9+9)
+set(g,"hi")
+set(o,"hi")
+echo(9+9*7/2*5+65)
+if(o is g)
+echo("oof")
+endif()

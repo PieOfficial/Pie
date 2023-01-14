@@ -5,6 +5,7 @@
 
 #include "argparse.hpp"
 #include "core/parser.h"
+#include "script/carescript.hpp"
 
 using namespace parser;
 using namespace std;
@@ -26,7 +27,27 @@ int main(int argc, char* argv[]) {
   }
 
   if (program["--build"] == true) {
-    std::cout << "Building" << std::endl;
+  //   std::cout << "Building" << std::endl;
+  //   string line;
+  //   ifstream myfile;
+  //   myfile.open("build.pie");
+
+  //  if(!myfile.is_open()) {
+  //     perror("Error open");
+  //     exit(EXIT_FAILURE);
+  //  }
+  //   while(getline(myfile, line)) {
+  //    run_script(line);
+  //   }
+          std::string r;
+        std::ifstream ifile("build.pie");
+        while(ifile.good()) r += ifile.get();
+        if(!r.empty()) r.pop_back();
+        auto labels = into_labels(r);
+        for(auto i : labels) {
+            std::cout << i.first << " args: " << i.second.arglist.size() << " lines: " << i.second.lines.size() << "\n";
+            std::cout << run_script(i.first,labels) << "\n";
+        }
   }
 
   // parser_class parser_class;
