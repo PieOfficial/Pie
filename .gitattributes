@@ -2,7 +2,7 @@
 #* text=auto
 *.cpp linguist-detectable=false
 * linguist-vendored
-*.js linguist-vendored=false
+*.pie linguist-vendored=false
 *.pie linguist-language=Pie
 
 
