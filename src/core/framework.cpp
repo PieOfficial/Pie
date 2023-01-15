@@ -1,5 +1,5 @@
 
-/* 
+/*
 EXAMPLE:
 class My_filter : public Filter {
 istream& is;
@@ -18,30 +18,27 @@ MAIN:
 My_filter f(cin,cout);
 return main_loop(&f);
 */
-#include "framework.hpp" // header in local directory
-#include <iostream> // header in standard library
+#include <iostream>  // header in standard library
+
+#include "framework.hpp"  // header in local directory
 
 using namespace framework;
 using namespace std;
 
-
-
 int Filter::main_loop(Filter* p) {
-  for(;;) {
+  for (;;) {
     try {
-      p->start(); 
+      p->start();
       // while (p->read()) {
       //   p->compute();
       //   p->write();
       // }
       return p->result();
-    }
-    catch (Filter::Retry& m) {
+    } catch (Filter::Retry& m) {
       if (int i = p->retry(m)) return i;
-    }
-    catch (...) {
-        cout << "Fatal filter error\n";
-        return 1;
+    } catch (...) {
+      cout << "Fatal filter error\n";
+      return 1;
     }
   }
 }

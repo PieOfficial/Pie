@@ -53,6 +53,17 @@ using namespace parser;
 using namespace framework;
 using namespace std;
 
+using std::endl;
+using std::cerr;
+using std::cout;
+using std::string;
+using std::vector; /** extendable array */
+using std::getline; /** reads a line from a file and puts it in a string */
+using std::ostream;
+using std::ifstream; /** class representing a file to read */
+using std::unordered_map; /** C++'s hash table */
+using std::unordered_set; /** C++'s hash set */
+
 void read_pieScript() {
   std::clock_t c_start = std::clock();  // Track Time Taken
   // Start read file
@@ -74,16 +85,7 @@ void read_pieScript() {
 
 
 
-using std::endl;
-using std::cerr;
-using std::cout;
-using std::string;
-using std::vector; /** extendable array */
-using std::getline; /** reads a line from a file and puts it in a string */
-using std::ostream;
-using std::ifstream; /** class representing a file to read */
-using std::unordered_map; /** C++'s hash table */
-using std::unordered_set; /** C++'s hash set */
+
 
 /** Target is a DAG node; it has a vertex ID (name), some edges (adjacent) and
     data (tasks). */
@@ -108,24 +110,21 @@ typedef unordered_map<string, Target> TargetMap;
 
     Why does this function also RETURN an ostream?? See the comments above
     main() */
-ostream& operator<<(ostream& out, const vector<string>& v)
-{
-    out << "[";
-    for (auto it=v.begin(); it!=v.end(); ++it) {
-        out << *it;
-        if (it + 1 != v.end())
-            out << ", ";
-    }
-    out << "]";
-    return out;
+ostream& operator<<(ostream& out, const vector<string>& v) {
+  out << "[";
+  for (auto it = v.begin(); it != v.end(); ++it) {
+    out << *it;
+    if (it + 1 != v.end()) out << ", ";
+  }
+  out << "]";
+  return out;
 }
 
 /** overloaded output operator prints a Target (using the overload above, since
     a Target contains 2 vectors) */
-ostream& operator<<(ostream& out, const Target& t)
-{
-    out << t.name << ": " << t.tasks << ", " << t.adjacent;
-    return out;
+ostream& operator<<(ostream& out, const Target& t) {
+  out << t.name << ": " << t.tasks << ", " << t.adjacent;
+  return out;
 }
 
 /** return a COPY of the string with spaces trimmed from the left and right */
@@ -181,21 +180,18 @@ bool readFile(const string& path, vector<string>& lines)
 }
 
 /** print an error and line number */
-void lineError(unsigned int line, const string& msg)
-{
-    cerr << "Error: " << msg << " [line " << line << "]\n";
+void lineError(unsigned int line, const string& msg) {
+  cerr << "Error: " << msg << " [line " << line << "]\n";
 }
 
 /** print an error for a target */
-void targetError(const string& target)
-{
-    cerr << "Error: processing target [" << target << "]\n";
+void targetError(const string& target) {
+  cerr << "Error: processing target [" << target << "]\n";
 }
 
 /** print an error for a task */
-void taskError(const string& task)
-{
-    cerr << "Error: processing task [" << task << "]\n";
+void taskError(const string& task) {
+  cerr << "Error: processing task [" << task << "]\n";
 }
 
 /** "adjacent" refers to tokens after the colon in the Cakefile, these are
@@ -215,26 +211,23 @@ void taskError(const string& task)
         task2
 
     Here, we would add tokens dep1 and dep2 to Target::adjacent */
-void parseAdjacent(string adj, Target& tgt)
-{
-    string::size_type pos;
+void parseAdjacent(string adj, Target& tgt) {
+  string::size_type pos;
 
-    /** while there are still spaces */
-    while ((pos = adj.find(" ")) != string::npos) {
-        /** take the string from index 0 to the first space */
-        string token = adj.substr(0, pos);
+  /** while there are still spaces */
+  while ((pos = adj.find(" ")) != string::npos) {
+    /** take the string from index 0 to the first space */
+    string token = adj.substr(0, pos);
 
-        /** erase it AND the space */
-        adj.erase(0, pos + 1);
+    /** erase it AND the space */
+    adj.erase(0, pos + 1);
 
-        /** if the token extracted is non-empty, add to the adjacency vector */
-        if (token.size())
-            tgt.adjacent.push_back(token);
-    }
+    /** if the token extracted is non-empty, add to the adjacency vector */
+    if (token.size()) tgt.adjacent.push_back(token);
+  }
 
-    /** don't forget the last token! */
-    if (adj.size())
-        tgt.adjacent.push_back(adj);
+  /** don't forget the last token! */
+  if (adj.size()) tgt.adjacent.push_back(adj);
 }
 
 /** a task is a command listed with a tab (see Cakefile)... all we do here is
@@ -362,54 +355,53 @@ void sortTargets(TargetMap& nodes, vector<string>& order)
 /** the stuff in this function uses Unix "system calls" to execute tasks...
     specifically we first "fork" a child process and let the process "exec"
     the command string using the BASH shell, i.e. bash -c "some command" */
-bool doTask(string task)
-{
-    cout << "@" << task << endl;
+bool doTask(string task) {
+  cout << "@" << task << endl;
 
-    /** make the C++ compiler happy by casting */
-    // char * const argv[] = {
-    //     (char *) "/bin/bash",
-    //     (char *) "-c",
-    //     (char *) task.c_str(),
-    //     NULL
-    // };
+  /** make the C++ compiler happy by casting */
+  // char * const argv[] = {
+  //     (char *) "/bin/bash",
+  //     (char *) "-c",
+  //     (char *) task.c_str(),
+  //     NULL
+  // };
 
-    /** fork() and exec*() are the most famous Unix system calls... They
-        separate the creation of a child process from loading an executable
-        from disk... After many decades, this process creation interface has
-        remained more or less unchanged, an example of the quality of Unix's
-        design
+  /** fork() and exec*() are the most famous Unix system calls... They
+      separate the creation of a child process from loading an executable
+      from disk... After many decades, this process creation interface has
+      remained more or less unchanged, an example of the quality of Unix's
+      design
 
-        @EXTRA:
-        https://ece.uwaterloo.ca/~dwharder/icsrts/Tutorials/fork_exec */
-    //  spawnl( P_WAIT, "child.exe",
-    //"/bin/bash", "-c", task.c_str(), "", NULL );
-system(task.c_str());
-    // int status;
-    // pid_t child = fork();
+      @EXTRA:
+      https://ece.uwaterloo.ca/~dwharder/icsrts/Tutorials/fork_exec */
+  //  spawnl( P_WAIT, "child.exe",
+  //"/bin/bash", "-c", task.c_str(), "", NULL );
+  system(task.c_str());
+  // int status;
+  // pid_t child = fork();
 
-    // if (child == -1) {
-    //     /** [THIS IS THE PARENT!] child creation failed */
-    //     perror("fork");
-    //     return false;
-    // } else if (!child) {
-    //     /** [THIS IS THE CHILD!] exec the command, which overwrites the child
-    //         process with the invoked executable, e.g. /bin/ls; returning at all
-    //         from execvp signifies error, so we exit(1) if execvp returns */
-    //     execvp("bash", argv);
-    //     perror("execvp");
-    //     exit(1);
-    // }
+  // if (child == -1) {
+  //     /** [THIS IS THE PARENT!] child creation failed */
+  //     perror("fork");
+  //     return false;
+  // } else if (!child) {
+  //     /** [THIS IS THE CHILD!] exec the command, which overwrites the child
+  //         process with the invoked executable, e.g. /bin/ls; returning at all
+  //         from execvp signifies error, so we exit(1) if execvp returns */
+  //     execvp("bash", argv);
+  //     perror("execvp");
+  //     exit(1);
+  // }
 
-    /** [THIS IS THE PARENT!] wait for the child to finish an collect it's exit
-        code using the wait() system call */
-    // if (wait(&status) == -1) {
-    //     perror("wait");
-    //     return false;
-    // }
+  /** [THIS IS THE PARENT!] wait for the child to finish an collect it's exit
+      code using the wait() system call */
+  // if (wait(&status) == -1) {
+  //     perror("wait");
+  //     return false;
+  // }
 
-    /** like Make, a command is successful if it exited with code 0 */
-    return true; //WIFEXITED(status) && WEXITSTATUS(status) == 0
+  /** like Make, a command is successful if it exited with code 0 */
+  return true;  // WIFEXITED(status) && WEXITSTATUS(status) == 0
 }
 
 /** loop through all tasks in the target */
@@ -593,36 +585,32 @@ int make()
 // parser_class parser_class;
 // parser_class.parser_file("test.pie");
 int main(int argc, char* argv[]) {
-  
-  
- argparse::ArgumentParser program("pie");
+  argparse::ArgumentParser program("pie");
 
- program.add_argument("--build")
-     .help("build root dir")
-     .default_value(false)
-     .implicit_value(true);
-     
- program.add_argument("--make")
-     .help("Run Piefile in the root dir")
-     .default_value(false)
-     .implicit_value(true);
+  program.add_argument("--build")
+      .help("build root dir")
+      .default_value(false)
+      .implicit_value(true);
 
+  program.add_argument("--make")
+      .help("Run Piefile in the root dir")
+      .default_value(false)
+      .implicit_value(true);
 
- try {
-   program.parse_args(argc, argv);
- } catch (const std::runtime_error& err) {
-   std::cerr << err.what() << std::endl;
-   std::cerr << program;
-   std::exit(1);
- }
+  try {
+    program.parse_args(argc, argv);
+  } catch (const std::runtime_error& err) {
+    std::cerr << err.what() << std::endl;
+    std::cerr << program;
+    std::exit(1);
+  }
 
- if (program["--build"] == true) {
-  read_pieScript();
- }
-if (program["--make"] == true){
+  if (program["--build"] == true) {
+    read_pieScript();
+  }
+  if (program["--make"] == true) {
     make();
-}
-  
+  }
 
   return 0;
 }
