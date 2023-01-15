@@ -6,8 +6,8 @@
 
 For compiling the source, you would require:
 - make
-- GNU G++ (>= 10.0)
-- 
+- GNU G++ (>= 11.2.0)
+
 Follow these steps to compile:
 1. Clone the github Pie repository with the following command:
    ```
