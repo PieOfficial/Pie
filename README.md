@@ -3,7 +3,7 @@
  
 [![C/C++ CI](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml/badge.svg?branch=main&event=push)](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml)
 ## Building
-
+Pie can only be built and run on Windows at the moment.
 For compiling the source, you would require:
 - make
 - GNU G++ (>= 11.2.0)

@@ -33,6 +33,8 @@ Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
+#include "spinners.hpp"
+
 
 /** C std library and Unix headers (mainly used in function doTask()) */
 #include <stdio.h>
@@ -585,6 +587,16 @@ int make()
 // parser_class parser_class;
 // parser_class.parser_file("test.pie");
 int main(int argc, char* argv[]) {
+//   jms::Spinner s("Doing something cool", jms::classic);
+//   s = jms::Spinner("Now Starting the next task", jms::classic);
+//   s.start();
+
+//   this_thread::sleep_for(2s);
+//   s.setAnimation(jms::dots);
+//   this_thread::sleep_for(2s);
+
+//   s.finish(jms::FinishedState::SUCCESS, "Failed to finish that task");
+
   argparse::ArgumentParser program("pie");
 
   program.add_argument("--build")
