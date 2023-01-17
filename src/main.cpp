@@ -35,11 +35,20 @@ Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 #include <unordered_set>
 #include "spinners.hpp"
 
+//#include <windows.h>
+//#include <mmsystem.h>
+
 
 /** C std library and Unix headers (mainly used in function doTask()) */
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef _WIN32
 #include "unistd.h"
+#elif __linux__
+#include <unistd.h>
+#endif
+
 //#include <sys/wait.h>
 #include <process.h> 
 #include <sys/types.h>
@@ -71,8 +80,10 @@ void read_pieScript() {
   // Start read file
   std::string r;
   std::ifstream ifile("build.pie");
+
   while (ifile.good()) r += ifile.get();
   if (!r.empty()) r.pop_back();
+
   auto labels = into_labels(r);
   for (auto i : labels) {
     std::cout << i.first << " args: " << i.second.arglist.size()
@@ -517,7 +528,7 @@ int make()
 {
     vector<string> lines;
     if (!readFile("Piefile", lines)) {
-        perror("readFile");
+        perror("readFile"); //Can not fine the Piefile
         return 1;
     }
 
@@ -587,6 +598,7 @@ int make()
 // parser_class parser_class;
 // parser_class.parser_file("test.pie");
 int main(int argc, char* argv[]) {
+    //Beep(1000,100);
 //   jms::Spinner s("Doing something cool", jms::classic);
 //   s = jms::Spinner("Now Starting the next task", jms::classic);
 //   s.start();

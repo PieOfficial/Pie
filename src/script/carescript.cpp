@@ -28,6 +28,9 @@ ScriptVariable to_var(KittenToken src) {
     return ret;
 }
 
+/**
+ 
+*/
 std::string run_script(std::string source) {
     ScriptSettings settings;
     auto labels = into_labels(source);
@@ -91,6 +94,12 @@ std::string run_script(std::string label_name, std::map<std::string,ScriptLabel>
     return "";
 }
 
+
+/**
+ * @brief returns true if c is a operator
+ * @param c
+ * @return bool
+ */
 bool is_operator_char(char c) {
     return c == '+' ||
            c == '-' ||
@@ -100,6 +109,7 @@ bool is_operator_char(char c) {
            c == '%' ||
            c == '$';
 }
+
 
 bool is_name_char(char c) {
     return (c <= 'Z' && c >= 'A') || 
@@ -172,6 +182,7 @@ std::vector<std::string> parse_label_arglist(std::string s) {
     }
     return ret;
 }
+
 
 std::vector<ScriptVariable> parse_argumentlist(std::string source, ScriptSettings& settings) {
     KittenLexer arg_lexer = KittenLexer()

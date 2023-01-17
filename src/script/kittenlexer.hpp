@@ -131,11 +131,13 @@ class KittenLexer {
     con_newlines.push_back(func);
     return *this;
   }
-
+/**
+ * Very complex. It is recommended that you do not touch anything here
+*/
   inline lexed_kittens lex(std::string src) {
     lexed_kittens ret;
     std::stack<char> opens;
-    std::string tmp;
+    std::string tmp; //Temporary storage for temporary items
     std::stack<char> stringqs;
     bool suntil_newline = false;
     unsigned long line = 1;
@@ -234,5 +236,4 @@ class KittenLexer {
 
   inline operator bool() { return !failbit; }
 };
-
 #endif

@@ -71,6 +71,11 @@ std::string last_name(std::filesystem::path path) {
   return ret;
 }
 
+/**
+ * @brief Converts a string to lowercase
+ * @param str
+ * @return 
+ */
 std::string to_lowercase(std::string str) {
   std::string ret;
   for (auto i : str)
