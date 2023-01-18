@@ -57,6 +57,8 @@ Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 #include "core/framework.hpp"
 
 #include "core/parser.h"
+#include "core/git.h"
+//#include "script/network.hpp"
 #include "script/carescript.hpp"
 
 
@@ -621,6 +623,12 @@ int main(int argc, char* argv[]) {
       .default_value(false)
       .implicit_value(true);
 
+  program.add_argument("--download")
+      .default_value(std::string("none"))
+      .help("Downloads a repo (repository) in the root dir")
+      .default_value(false)
+      .implicit_value(true);
+
   try {
     program.parse_args(argc, argv);
   } catch (const std::runtime_error& err) {
@@ -634,6 +642,14 @@ int main(int argc, char* argv[]) {
   }
   if (program["--make"] == true) {
     make();
+  }
+  if (program["--download"] == true) {
+    auto input = program.get<string>("--download");
+        //     std::string error;
+        // std::string repo = input;
+        // repo = to_lowercase(repo);
+        // error = download_repo(repo);
+
   }
 
   return 0;

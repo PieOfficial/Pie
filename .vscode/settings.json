@@ -78,6 +78,8 @@
         "stop_token": "cpp",
         "thread": "cpp",
         "unordered_set": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "mutex": "cpp",
+        "queue": "cpp"
     }
 }

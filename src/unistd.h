@@ -72,7 +72,7 @@ extern "C" {
 #endif /* chdir */
 
 #ifndef close
-#define close _close
+#define close close //_close
 #endif /* close */
 
 #ifndef STDIN_FILENO
