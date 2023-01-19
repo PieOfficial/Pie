@@ -57,7 +57,7 @@ Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 #include "core/framework.hpp"
 
 #include "core/parser.h"
-#include "core/git.h"
+//#include "core/git.h"
 //#include "script/network.hpp"
 #include "script/carescript.hpp"
 
