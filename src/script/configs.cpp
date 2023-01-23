@@ -222,7 +222,7 @@ bool is_dependency(std::string name) {
   return false;
 }
 
-void add_to_dependencylist(std::string name, bool local) {
+void add_to_dependencylist(const std::string& name, bool local) {
   IniFile reg = IniFile::from_file(CATCARE_CHECKLISTNAME);
   IniList l = reg.get("dependencies", "Download").to_list();
   for (size_t i = 0; i < l.size(); ++i) {
