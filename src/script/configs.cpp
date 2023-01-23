@@ -99,7 +99,7 @@ void write_localconf() {
   file.to_file(CATCARE_CONFIGFILE);
 }
 
-IniDictionary extract_configs(std::string name) {
+IniDictionary extract_configs(const std::string& name) {
   IniDictionary ret;
 
   IniFile file = IniFile::from_file(CATCARE_ROOT + CATCARE_DIRSLASH + name +
@@ -212,7 +212,7 @@ void remove_from_register(std::string name) {
   reg.to_file(CATCARE_ROOT + CATCARE_DIRSLASH CATCARE_REGISTERNAME);
 }
 
-bool is_dependency(std::string name) {
+bool is_dependency(const std::string& name) {
   IniList lst = get_dependencylist();
   for (auto i : lst) {
     if (i.get_type() == IniType::String && name == (std::string)i) {
