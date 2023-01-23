@@ -2,7 +2,13 @@
 
 using namespace std;
 
-const char *data = R""""(
+
+
+class start
+{
+private:
+    /* data */
+    const char *data = R""""(
                                                                                 .^,;IllllII:^.                                                       
                                                                        .`":I!i!!!llIIIIIIIll!!ii;^                                                   
                                                                 `,l!ii!!lIIIIIIIIIIIIIIIIIIIIIIII!il'                                                
@@ -85,3 +91,17 @@ l)+~~~>iiiiiiiiiiiiiiiii~{)))))))1111{111111111111111111111111111111111111111111
                                                                                                                                      ^!-[}11))){+'   
 
 )"""";
+
+public:
+
+void start::printStart() {
+    cout << data << "\n";
+}
+
+void start::StopStart() {
+    system("cls");
+    delete data;
+}
+
+
+};
