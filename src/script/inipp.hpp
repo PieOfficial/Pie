@@ -448,7 +448,7 @@ public:
     inline void set(const std::string& key, IniDictionary value, std::string section = "Main") { get(key,section) = value; }
     inline void set(const std::string& key, IniVector value, std::string section = "Main") { get(key,section) = value; }
 
-    inline void set(const std::string& key, std::string value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, const std::string& value, std::string section = "Main") { get(key,section) = value; }
     inline void set(const std::string& key, int value, std::string section = "Main") { get(key,section) = value; }
     inline void set(const std::string& key, long double value, std::string section = "Main") { get(key,section) = value; }
 
@@ -716,7 +716,7 @@ namespace IniHelper {
         return IniElement();
     }
 
-    inline IniLink make_link(const std::string& to, std::string section, IniFile& file) {
+    inline IniLink make_link(const std::string& to, const std::string& section, IniFile& file) {
         IniLink lk("$" + to + ":" + section);
         lk.getr(file);
         return lk;
