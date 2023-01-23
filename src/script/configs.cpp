@@ -42,7 +42,7 @@ static std::string read(std::string path) {
   return re;
 }
 
-void make_file(std::string name, std::string stdc) {
+void make_file(std::string name, const std::string& stdc) {
   std::ofstream of;
   of.open(name, std::ios::trunc);
   of.close();
@@ -180,7 +180,7 @@ bool installed(std::string name) {
   return false;
 }
 
-void add_to_register(std::string name) {
+void add_to_register(const std::string& name) {
   if (installed(name)) {
     return;
   }

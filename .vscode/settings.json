@@ -80,6 +80,16 @@
         "unordered_set": "cpp",
         "*.rh": "cpp",
         "mutex": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "condition_variable": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "memory_resource": "cpp",
+        "random": "cpp",
+        "string_view": "cpp",
+        "shared_mutex": "cpp",
+        "cinttypes": "cpp"
     }
 }

@@ -3,7 +3,7 @@
 #include "options.hpp"
 
 bool is_redirected(std::string name) { return local_redirect.count(name) > 0; }
-void make_redirect(std::string name, std::string path) {
+void make_redirect(const std::string& name, std::string path) {
   if (is_redirected(name)) {
     if (!confirmation("redefine the aleady existing redirect for \"" + name +
                       "\" ?")) {

@@ -107,7 +107,7 @@ class IniElement {
 public:
     inline IniType get_type() const { return type; }
 
-    IniElement(IniType type, std::string src) // unsave, don't use if you don't know what you are doing!
+    IniElement(IniType type, const std::string& src) // unsave, don't use if you don't know what you are doing!
         : type(type), src(src) { } 
     
     // Warning! This doesn't construct a string for you! It will check what construct type it is. so "12" is NOT a string but an int!
@@ -188,7 +188,7 @@ public:
     }
     
     // This, other then IniElement(std::string), constructs a string!
-    inline IniElement operator=(std::string str) {
+    inline IniElement operator=(const std::string& str) {
         src = "\"" + str + "\"";
         type = IniType::String;
         return *this;
@@ -258,7 +258,7 @@ struct IniSection {
         return members.back().element;
     }
 
-    inline bool has(std::string key) const {
+    inline bool has(const std::string& key) const {
         for(auto& i : members) 
             if(i.key == key) return true;  
         return false;
@@ -287,7 +287,7 @@ public:
             if(i.has(key) && i.name == section) return true;
         return false;
     }
-    inline bool has_section(std::string section) const {
+    inline bool has_section(const std::string& section) const {
         for(auto i : sections) 
             if(i.name == section) return true;
         return false;
@@ -429,7 +429,7 @@ public:
     }
 
     // @exception will return sections.front() and sets err/err_desc
-    inline IniSection& section(std::string name) {
+    inline IniSection& section(const std::string& name) {
         if(!has_section(name)) {
             err = IniError::READ_ERROR;
             err_desc = "Unable to get not existing section " + name + " !";
@@ -443,7 +443,7 @@ public:
         return sections.front();
     }
 
-    inline void set(std::string key, IniElement value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, IniElement value, std::string section = "Main") { get(key,section) = value; }
     inline void set(std::string key, IniList value, std::string section = "Main") { get(key,section) = value; }
     inline void set(std::string key, IniDictionary value, std::string section = "Main") { get(key,section) = value; }
     inline void set(std::string key, IniVector value, std::string section = "Main") { get(key,section) = value; }
@@ -716,7 +716,7 @@ namespace IniHelper {
         return IniElement();
     }
 
-    inline IniLink make_link(std::string to, std::string section, IniFile& file) {
+    inline IniLink make_link(const std::string& to, std::string section, IniFile& file) {
         IniLink lk("$" + to + ":" + section);
         lk.getr(file);
         return lk;
