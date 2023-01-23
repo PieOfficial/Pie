@@ -1,6 +1,7 @@
 # Pie
  Pie is a build system designed for the purpose of power, speed and productivity. general purpose build tool that combines ease of use with high efficiency. It is very easy to use syntactically, and also provides great build times!
  
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1ecdaec952f3441abc959c6c122e4858)](https://app.codacy.com/gh/PieOfficial/Pie?utm_source=github.com&utm_medium=referral&utm_content=PieOfficial/Pie&utm_campaign=Badge_Grade_Settings)
 [![C/C++ CI](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml/badge.svg?branch=main&event=push)](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml)
 ## Building
 Pie can only be built and run on Windows at the moment.
