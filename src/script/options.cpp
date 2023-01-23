@@ -3,7 +3,7 @@
 #include "options.hpp"
 
 bool is_redirected(std::string name) { return local_redirect.count(name) > 0; }
-void make_redirect(const std::string& name, std::string path) {
+void make_redirect(const std::string& name, const std::string& path) {
   if (is_redirected(name)) {
     if (!confirmation("redefine the aleady existing redirect for \"" + name +
                       "\" ?")) {
@@ -13,11 +13,11 @@ void make_redirect(const std::string& name, std::string path) {
   local_redirect[name] = path;
 }
 
-void print_message(std::string mod, std::string message) {
+void print_message(const std::string& mod, std::string message) {
   if (!opt_silence) std::cout << "[" << mod << "] " << message << "\n";
 }
 
-bool confirmation(std::string context) {
+bool confirmation(const std::string& context) {
   std::cout << "Do you really want to " << context << " [y/N]:";
   std::flush(std::cout);
   std::string inp;

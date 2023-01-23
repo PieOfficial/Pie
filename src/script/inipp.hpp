@@ -236,8 +236,8 @@ struct IniPair {
     IniElement element = IniElement(IniType::Null);
 
     IniPair() {}
-    IniPair(std::string key) : key(key) {}
-    IniPair(std::string key, IniElement element)
+    IniPair(const std::string& key) : key(key) {}
+    IniPair(const std::string& key, IniElement element)
         : key(key), element(element) {}
     //IniPair(IniPair& pair)
     //    : key(pair.key), element(pair.element) {}
@@ -247,7 +247,7 @@ struct IniSection {
     std::string name;
     std::vector<IniPair> members;
 
-    IniSection(std::string name)
+    IniSection(const std::string& name)
         : name(name) {}
 
     IniElement& operator[](std::string key) {
@@ -278,7 +278,7 @@ class IniFile {
 public:
     std::vector<IniSection> sections;
 
-    inline bool has(std::string key) const {
+    inline bool has(const std::string& key) const {
         return has(key,"");
     }
     inline bool has(std::string key, std::string section) const {
@@ -444,19 +444,19 @@ public:
     }
 
     inline void set(const std::string& key, IniElement value, std::string section = "Main") { get(key,section) = value; }
-    inline void set(std::string key, IniList value, std::string section = "Main") { get(key,section) = value; }
-    inline void set(std::string key, IniDictionary value, std::string section = "Main") { get(key,section) = value; }
-    inline void set(std::string key, IniVector value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, IniList value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, IniDictionary value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, IniVector value, std::string section = "Main") { get(key,section) = value; }
 
-    inline void set(std::string key, std::string value, std::string section = "Main") { get(key,section) = value; }
-    inline void set(std::string key, int value, std::string section = "Main") { get(key,section) = value; }
-    inline void set(std::string key, long double value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, std::string value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, int value, std::string section = "Main") { get(key,section) = value; }
+    inline void set(const std::string& key, long double value, std::string section = "Main") { get(key,section) = value; }
 
     inline void construct(std::string key, std::string source, std::string section = "Main") {
         IniFile::set(key,IniElement(source),section);
     }
 
-    IniFile(std::string file) { operator=(from_file(file)); }
+    IniFile(const std::string& file) { operator=(from_file(file)); }
 
     IniFile() {}
     // checks if `elem` is a IniLink, and if yes, returns it's value.
@@ -513,7 +513,7 @@ public:
         refresh(file);
         return get();
     }
-    IniLink(std::string src) : build(src) { }
+    IniLink(const std::string& src) : build(src) { }
 
     static bool valid(std::string str) { return (str.size() > 2 && str[0] == '$'); }
 

@@ -293,7 +293,7 @@ void set_filelist(IniList list) {
   }
 }
 
-bool blacklisted(std::string repo) {
+bool blacklisted(const std::string& repo) {
   IniFile file = IniFile::from_file(CATCARE_CONFIGFILE);
   IniList l = file.get("blacklist");
   for (auto i : l) {
