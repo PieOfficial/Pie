@@ -599,6 +599,11 @@ int make()
 
 // parser_class parser_class;
 // parser_class.parser_file("test.pie");
+
+
+
+
+
 int main(int argc, char* argv[]) {
     //Beep(1000,100);
 //   jms::Spinner s("Doing something cool", jms::classic);
@@ -610,6 +615,8 @@ int main(int argc, char* argv[]) {
 //   this_thread::sleep_for(2s);
 
 //   s.finish(jms::FinishedState::SUCCESS, "Failed to finish that task");
+  // Intialization
+  // Initialize();
 
   argparse::ArgumentParser program("pie");
 
