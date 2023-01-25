@@ -6,6 +6,6 @@ set(o,"pie")
 
 echo(9+9*7/2*5+65)
 
-if(g is o)
+if("pie" is "pie")
 echo("yay it works!")
 endif()
