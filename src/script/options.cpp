@@ -13,11 +13,11 @@ void make_redirect(const std::string& name, const std::string& path) {
   local_redirect[name] = path;
 }
 
-void print_message(const std::string& mod, std::string message) {
+void print_message(std::string mod, std::string message) {
   if (!opt_silence) std::cout << "[" << mod << "] " << message << "\n";
 }
 
-bool confirmation(const std::string& context) {
+bool confirmation(std::string context) {
   std::cout << "Do you really want to " << context << " [y/N]:";
   std::flush(std::cout);
   std::string inp;

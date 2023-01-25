@@ -42,7 +42,7 @@ static std::string read(std::string path) {
   return re;
 }
 
-void make_file(std::string name, const std::string& stdc) {
+void make_file(std::string name, std::string stdc) {
   std::ofstream of;
   of.open(name, std::ios::trunc);
   of.close();
@@ -99,7 +99,7 @@ void write_localconf() {
   file.to_file(CATCARE_CONFIGFILE);
 }
 
-IniDictionary extract_configs(const std::string& name) {
+IniDictionary extract_configs(std::string name) {
   IniDictionary ret;
 
   IniFile file = IniFile::from_file(CATCARE_ROOT + CATCARE_DIRSLASH + name +
@@ -180,7 +180,7 @@ bool installed(std::string name) {
   return false;
 }
 
-void add_to_register(const std::string& name) {
+void add_to_register(std::string name) {
   if (installed(name)) {
     return;
   }
@@ -212,7 +212,7 @@ void remove_from_register(std::string name) {
   reg.to_file(CATCARE_ROOT + CATCARE_DIRSLASH CATCARE_REGISTERNAME);
 }
 
-bool is_dependency(const std::string& name) {
+bool is_dependency(std::string name) {
   IniList lst = get_dependencylist();
   for (auto i : lst) {
     if (i.get_type() == IniType::String && name == (std::string)i) {
@@ -222,7 +222,7 @@ bool is_dependency(const std::string& name) {
   return false;
 }
 
-void add_to_dependencylist(const std::string& name, bool local) {
+void add_to_dependencylist(std::string name, bool local) {
   IniFile reg = IniFile::from_file(CATCARE_CHECKLISTNAME);
   IniList l = reg.get("dependencies", "Download").to_list();
   for (size_t i = 0; i < l.size(); ++i) {
@@ -293,7 +293,7 @@ void set_filelist(IniList list) {
   }
 }
 
-bool blacklisted(const std::string& repo) {
+bool blacklisted(std::string repo) {
   IniFile file = IniFile::from_file(CATCARE_CONFIGFILE);
   IniList l = file.get("blacklist");
   for (auto i : l) {

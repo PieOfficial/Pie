@@ -94,14 +94,14 @@ l)+~~~>iiiiiiiiiiiiiiiii~{)))))))1111{111111111111111111111111111111111111111111
 
 public:
 
-void start::printStart() {
-    cout << data << "\n";
-}
+// void start::printStart() {
+//     cout << data << "\n";
+// }
 
-void start::StopStart() {
-    system("cls");
-    delete data;
-}
+// void start::StopStart() {
+//     system("cls");
+//     delete data;
+// }
 
 
 };
