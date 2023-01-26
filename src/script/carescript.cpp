@@ -925,6 +925,7 @@ std::map<std::string,ScriptBuiltin> script_builtins = {
 
         return script_null;
     }}},
+    //ADD NEW COMMANDS BELOW HERE
 };
 
 #undef ARG_REQUIRES
