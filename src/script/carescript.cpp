@@ -633,7 +633,7 @@ std::map<std::string,ScriptBuiltin> script_builtins = {
         ARG_REQUIRES(1,ScriptVariable::Type::String);
         std::string type = args[0].name;
         std::string file = args[1].string;
-
+        
         if(type == "FILE") {
             return std::filesystem::exists(file) ? script_true : script_false;
         }
