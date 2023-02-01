@@ -183,12 +183,12 @@ std::string download_repo(std::string install) {
         });
         IFERR(err);
         
-        err = run_script("download_checklist",labels,"",{
-            usr, // user
-            name, // project
-            CATCARE_CHECKLISTNAME, // filename
-            CATCARE_ROOT + CATCARE_DIRSLASH + name + CATCARE_DIRSLASH + CATCARE_CHECKLISTNAME, // destination
-        });
+        // err = run_script("download_checklist",labels,"",{
+        //     usr, // user
+        //     name, // project
+        //     CATCARE_CHECKLISTNAME, // filename
+        //     CATCARE_ROOT + CATCARE_DIRSLASH + name + CATCARE_DIRSLASH + CATCARE_CHECKLISTNAME, // destination
+        // });
         IFERR(err);
 
         IniDictionary conf = extract_configs(name);
