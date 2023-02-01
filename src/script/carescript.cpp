@@ -5,6 +5,48 @@
 #include <string.h>
 #include <filesystem>
 
+#ifdef _WIN32
+#include <windows.h>
+#include <tchar.h>
+#endif
+
+#ifdef _WIN32
+int process(const std::string& cmd) {
+   STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
+
+
+    // Start the child process.
+    if( !CreateProcess( NULL,   // No module name (use command line)
+        (char*)(cmd.c_str()),        // Command line
+        NULL,           // Process handle not inheritable
+        NULL,           // Thread handle not inheritable
+        TRUE,          // Set handle inheritance to FALSE
+        CREATE_NO_WINDOW,              // No creation flags
+        NULL,           // Use parent's environment block
+        NULL,           // Use parent's starting directory
+        &si,            // Pointer to STARTUPINFO structure
+        &pi )           // Pointer to PROCESS_INFORMATION structure
+    )
+    {
+        //printf( "CreateProcess failed (%d).\n", GetLastError() );
+        return 1;
+    }
+
+    // Wait until child process exits.
+    WaitForSingleObject( pi.hProcess, 1 ); //INFINITE
+
+    // Close process and thread handles.
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+
+}
+#endif
+
 ScriptVariable to_var(KittenToken src) {
     ScriptVariable ret;
     if(src.str) {
@@ -390,7 +432,7 @@ std::map<std::string,ScriptBuiltin> script_builtins = {
             ++settings.ignore_endifs;
             return script_null; 
         }
-        
+
         ARG_REQUIRES(0,ScriptVariable::Type::Number);
         
         settings.should_run.push(args[0].number == true);
@@ -923,6 +965,17 @@ std::map<std::string,ScriptBuiltin> script_builtins = {
             ERROR("unknown enum type");
         }
 
+        return script_null;
+    }}},
+    {"ifcmd",{2,[](ScriptArglist args, ScriptSettings& settings)->ScriptVariable {
+        DONTRUN_WIF();
+        ARG_REQUIRES(0,ScriptVariable::Type::String); //Command to check if exists
+        ARG_REQUIRES(1,ScriptVariable::Type::String); //Command to run IF the other command does not exist
+        LPSTR lpFilePart;
+        char filename[MAX_PATH];
+        if(!SearchPath( NULL, args[0].string.c_str(), ".exe", MAX_PATH, filename, &lpFilePart)){
+            system(args[1].string.c_str());
+        }
         return script_null;
     }}},
     //ADD NEW COMMANDS BELOW HERE

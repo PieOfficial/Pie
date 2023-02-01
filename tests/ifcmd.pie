@@ -1,0 +1,1 @@
+ifcmd("g++.exe","echo ERROR: g++ does not exist")
