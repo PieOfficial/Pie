@@ -57,8 +57,6 @@ Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 #include "core/framework.hpp"
 
 #include "core/parser.h"
-//#include "core/git.h"
-//#include "script/network.hpp"
 #include "script/carescript.hpp"
 
 
@@ -94,7 +92,7 @@ void read_pieScript() {
   }
   std::clock_t c_end = std::clock();
 
-  double time_elapsed_ms = 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC;
+  double time_elapsed_ms = 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC; //Calulate how much time taken
   std::cout << "CPU time used: " << time_elapsed_ms << " ms\n";
 }
 
@@ -373,47 +371,7 @@ void sortTargets(TargetMap& nodes, vector<string>& order)
 bool doTask(string task) {
   cout << "@" << task << endl;
 
-  /** make the C++ compiler happy by casting */
-  // char * const argv[] = {
-  //     (char *) "/bin/bash",
-  //     (char *) "-c",
-  //     (char *) task.c_str(),
-  //     NULL
-  // };
-
-  /** fork() and exec*() are the most famous Unix system calls... They
-      separate the creation of a child process from loading an executable
-      from disk... After many decades, this process creation interface has
-      remained more or less unchanged, an example of the quality of Unix's
-      design
-
-      @EXTRA:
-      https://ece.uwaterloo.ca/~dwharder/icsrts/Tutorials/fork_exec */
-  //  spawnl( P_WAIT, "child.exe",
-  //"/bin/bash", "-c", task.c_str(), "", NULL );
   system(task.c_str());
-  // int status;
-  // pid_t child = fork();
-
-  // if (child == -1) {
-  //     /** [THIS IS THE PARENT!] child creation failed */
-  //     perror("fork");
-  //     return false;
-  // } else if (!child) {
-  //     /** [THIS IS THE CHILD!] exec the command, which overwrites the child
-  //         process with the invoked executable, e.g. /bin/ls; returning at all
-  //         from execvp signifies error, so we exit(1) if execvp returns */
-  //     execvp("bash", argv);
-  //     perror("execvp");
-  //     exit(1);
-  // }
-
-  /** [THIS IS THE PARENT!] wait for the child to finish an collect it's exit
-      code using the wait() system call */
-  // if (wait(&status) == -1) {
-  //     perror("wait");
-  //     return false;
-  // }
 
   /** like Make, a command is successful if it exited with code 0 */
   return true;  // WIFEXITED(status) && WEXITSTATUS(status) == 0
