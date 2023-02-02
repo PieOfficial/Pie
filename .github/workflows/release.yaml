@@ -10,13 +10,12 @@ jobs:
     name: Release
     runs-on: windows-latest
     steps:
-    steps:
-    - uses: actions/checkout@v3
-    - name: make
-      run: make -j2
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
+     - uses: actions/checkout@v3
+     - name: make
+       run: make -j2
+     - name: Release
+       uses: softprops/action-gh-release@v1
+       with:
           name: Release ${{ steps.get_version.outputs.VERSION }}
           fail_on_unmatched_files: true
           files: |
