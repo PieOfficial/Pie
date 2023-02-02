@@ -6,6 +6,11 @@
 - [Credit](#Credit)
 
 [![C/C++ CI](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml/badge.svg?branch=main&event=push)](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml)
+
+<div id="badges">
+ <img src="https://img.shields.io/github/license/PieOfficial/Pie"/>  
+</div>
+
 ##  Building
 Pie can only be built and run on Windows at the moment.
 For compiling the source, you would require:
