@@ -5,14 +5,20 @@ on:
     tags:
       - 'v*'
   
-jobs:
-  build:
+jobs: 
+   build:
     name: Release
     runs-on: windows-latest
     steps:
      - uses: actions/checkout@v3
+       with:
+        version: "^1.0.0"
+        token: ${{ SECRETS.GITHUB_TOKEN }}
      - name: make
        run: make -j2
+     - name: Get version
+       id: get_version
+       run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
      - name: Release
        uses: softprops/action-gh-release@v1
        with:
