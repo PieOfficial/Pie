@@ -45,22 +45,22 @@ Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 
 #ifdef _WIN32
 #include "unistd.h"
+#include <process.h> 
 #elif __linux__
 #include <unistd.h>
 #endif
 
 //#include <sys/wait.h>
-#include <process.h> 
 #include <sys/types.h>
 
 #include "argparse.hpp"
 #include "core/framework.hpp"
 
-#include "core/parser.h"
+//#include "core/parser.h"
 #include "script/carescript.hpp"
 
 
-using namespace parser;
+//using namespace parser;
 using namespace framework;
 using namespace std;
 
