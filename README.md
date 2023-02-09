@@ -35,4 +35,4 @@ Follow these steps to compile:
 ##  Licensing </p>
 Pie uses the MIT license. Please read the [license](https://github.com/PieOfficial/Pie/blob/main/LICENSE) carefully.
 ## Credit
-- [LabRicecat/CatCaretaker](https://github.com/LabRicecat/CatCaretaker "LabRicecat/CatCaretaker") for the lexer and parser
+- [LabRicecat/CatCaretaker](https://github.com/LabRicecat/CatCaretaker "LabRicecat/CatCaretaker") For both the lexer and the parser
