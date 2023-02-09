@@ -1,5 +1,5 @@
 # ***Pie***
-Pie is a build system designed for the purpose of power, speed, and productivity. general purpose build tool that combines ease of use with high efficiency. It is very easy to use syntactically, and also provides great build times! Pie is free and open-source and is written in C++. It is designed to be easy to use, extensible, and fast. Pie is similar to cmake(A Building system).
+Pie is a build system designed for power, speed, and productivity. A general purpose build tool that combines ease of use with high efficiency. It is very easy to use syntactically, and also provides great build times! Pie is free and open-source and is written in C++ and C. It is designed to be easy to use, extensible, and fast. Pie is similar to cmake(A Building system).
  - [Introduction](#Pie)
 - [Building](#Building)
 - [Licensing](#licensing)
