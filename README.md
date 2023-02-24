@@ -1,5 +1,7 @@
 # ***Pie***
-Pie is a build system designed for power, speed, and productivity. A general purpose build tool that combines ease of use with high efficiency. It is very easy to use syntactically, and also provides great build times! Pie is free and open-source and is written in C++ and C. It is designed to be easy to use, extensible, and fast. Pie's syntax is similar to cmake(A Building system).
+Pie is a free and open source build system designed for power, speed, and productivity. Pie is a general purpose build system that is both easy to use and efficient. It is simple in terms of syntax and provides quick build times! 
+
+Pie is written in C and C++, it's designed to be easy to use, extensible, and fast. Pie's syntax is similar to CMake (Another build system).
  - [Introduction](#Pie)
 - [Building](#Building)
 - [Licensing](#licensing)
@@ -13,7 +15,7 @@ Pie is a build system designed for power, speed, and productivity. A general pur
 
 ##  Building
 Pie can only be built and run on Windows at the moment.
-For compiling the source, you would require:
+For compiling from source, the dependencies are:
 - make
 - GNU G++ (>= 11.2.0)
 
@@ -22,14 +24,11 @@ Follow these steps to compile:
    ```
    git clone https://github.com/PieOfficial/Pie Pie --recursive
    ``` 
-   Make sure you use the *--recursive* flag since the code has some submodule dependencies
+   Make sure you use the *`--recursive`* flag since the code has some submodule dependencies
     
-2. Move into the *Pie* directory using 
+2. Move into the *Pie* directory using `cd Pie`
 
-        cd Pie
-3. Now we will compile the source code using *make*. If your *g++* points to one of the suitable compilers listed above the simply run 
-    
-        make
+3. Compile the source code using *make*. If your *g++* version is newer or equal to the one listed above, simply run `make`
         
         
 ##  Licensing </p>
