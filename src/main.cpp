@@ -1,28 +1,3 @@
-/*
-                                                                          
-                                                                          
-MMMMMMMM               MMMMMMMM                    iiii                   
-M:::::::M             M:::::::M                   i::::i                  
-M::::::::M           M::::::::M                    iiii                   
-M:::::::::M         M:::::::::M                                           
-M::::::::::M       M::::::::::M  aaaaaaaaaaaaa   iiiiiiinnnn  nnnnnnnn    
-M:::::::::::M     M:::::::::::M  a::::::::::::a  i:::::in:::nn::::::::nn  
-M:::::::M::::M   M::::M:::::::M  aaaaaaaaa:::::a  i::::in::::::::::::::nn 
-M::::::M M::::M M::::M M::::::M           a::::a  i::::inn:::::::::::::::n
-M::::::M  M::::M::::M  M::::::M    aaaaaaa:::::a  i::::i  n:::::nnnn:::::n
-M::::::M   M:::::::M   M::::::M  aa::::::::::::a  i::::i  n::::n    n::::n
-M::::::M    M:::::M    M::::::M a::::aaaa::::::a  i::::i  n::::n    n::::n
-M::::::M     MMMMM     M::::::Ma::::a    a:::::a  i::::i  n::::n    n::::n
-M::::::M               M::::::Ma::::a    a:::::a i::::::i n::::n    n::::n
-M::::::M               M::::::Ma:::::aaaa::::::a i::::::i n::::n    n::::n
-M::::::M               M::::::M a::::::::::aa:::ai::::::i n::::n    n::::n
-MMMMMMMM               MMMMMMMM  aaaaaaaaaa  aaaaiiiiiiii nnnnnn    nnnnnn
-                                                                          
-                                                                          
-                                                                          
-                                                                          
-Licensed under the MIT License <http://opensource.org/licenses/MIT>.
- */
 /** C++ std library */
 #include <ctime>
 #include <fstream>

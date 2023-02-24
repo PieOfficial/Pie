@@ -2,8 +2,6 @@
 
 using namespace std;
 
-
-
 class start
 {
 private:
