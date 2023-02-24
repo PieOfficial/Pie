@@ -37,7 +37,6 @@
 
 //using namespace parser;
 using namespace framework;
-using namespace std;
 
 using std::endl;
 using std::cerr;
@@ -240,7 +239,7 @@ bool parseTask(const string& t, vector<string>& tasks)
         return true;
 
     /** if line doesn't start with tab, it's not part of the current target */
-    if (t.at(0) != '\t')
+    if (t[0] != '\t')
         return false;
 
     /** read the task line, skipping the leading tab character */
@@ -532,10 +531,6 @@ int make()
 
 // parser_class parser_class;
 // parser_class.parser_file("test.pie");
-
-
-
-
 
 int main(int argc, char* argv[]) {
     //Beep(1000,100);
