@@ -1,28 +1,3 @@
-/*
-                                                                          
-                                                                          
-MMMMMMMM               MMMMMMMM                    iiii                   
-M:::::::M             M:::::::M                   i::::i                  
-M::::::::M           M::::::::M                    iiii                   
-M:::::::::M         M:::::::::M                                           
-M::::::::::M       M::::::::::M  aaaaaaaaaaaaa   iiiiiiinnnn  nnnnnnnn    
-M:::::::::::M     M:::::::::::M  a::::::::::::a  i:::::in:::nn::::::::nn  
-M:::::::M::::M   M::::M:::::::M  aaaaaaaaa:::::a  i::::in::::::::::::::nn 
-M::::::M M::::M M::::M M::::::M           a::::a  i::::inn:::::::::::::::n
-M::::::M  M::::M::::M  M::::::M    aaaaaaa:::::a  i::::i  n:::::nnnn:::::n
-M::::::M   M:::::::M   M::::::M  aa::::::::::::a  i::::i  n::::n    n::::n
-M::::::M    M:::::M    M::::::M a::::aaaa::::::a  i::::i  n::::n    n::::n
-M::::::M     MMMMM     M::::::Ma::::a    a:::::a  i::::i  n::::n    n::::n
-M::::::M               M::::::Ma::::a    a:::::a i::::::i n::::n    n::::n
-M::::::M               M::::::Ma:::::aaaa::::::a i::::::i n::::n    n::::n
-M::::::M               M::::::M a::::::::::aa:::ai::::::i n::::n    n::::n
-MMMMMMMM               MMMMMMMM  aaaaaaaaaa  aaaaiiiiiiii nnnnnn    nnnnnn
-                                                                          
-                                                                          
-                                                                          
-                                                                          
-Licensed under the MIT License <http://opensource.org/licenses/MIT>.
- */
 /** C++ std library */
 #include <ctime>
 #include <fstream>
@@ -62,7 +37,6 @@ Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 
 //using namespace parser;
 using namespace framework;
-using namespace std;
 
 using std::endl;
 using std::cerr;
@@ -265,7 +239,7 @@ bool parseTask(const string& t, vector<string>& tasks)
         return true;
 
     /** if line doesn't start with tab, it's not part of the current target */
-    if (t.at(0) != '\t')
+    if (t[0] != '\t')
         return false;
 
     /** read the task line, skipping the leading tab character */
@@ -557,10 +531,6 @@ int make()
 
 // parser_class parser_class;
 // parser_class.parser_file("test.pie");
-
-
-
-
 
 int main(int argc, char* argv[]) {
     //Beep(1000,100);
