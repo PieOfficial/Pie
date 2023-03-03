@@ -29,14 +29,13 @@
 #include <sys/types.h>
 
 #include "argparse.hpp"
-#include "core/framework.hpp"
 
 //#include "core/parser.h"
-#include "script/carescript.hpp"
+#include "script/carescript-api.hpp"
 
 
 //using namespace parser;
-using namespace framework;
+using namespace std;
 
 using std::endl;
 using std::cerr;
@@ -51,25 +50,39 @@ using std::unordered_set; /** C++'s hash set */
 
 void read_pieScript() {
   std::clock_t c_start = std::clock();  // Track Time Taken
-  // Start read file
-  std::string r;
-  std::ifstream ifile("build.pie");
+        std::string r;
+        std::ifstream ifile("build.pie");
+        while(ifile.good()) r += ifile.get();
+        if(r != "") r.pop_back();
 
-  while (ifile.good()) r += ifile.get();
-  if (!r.empty()) r.pop_back();
+    // creates a new interpreter instance
+    carescript::Interpreter interpreter;
 
-  auto labels = into_labels(r);
-  for (auto i : labels) {
-    std::cout << i.first << " args: " << i.second.arglist.size()
-              << " lines: " << i.second.lines.size() << "\n";
-    std::cout << run_script(i.first, labels) << "\n";
-  }
+    // save the current state as id 0
+    interpreter.save(0);
+
+    interpreter.on_error([](carescript::Interpreter& interp) {
+        std::cout << interp.error() << "\n";
+        // This code executes when an error occurs
+    });
+
+    // pre processes the code
+    interpreter.pre_process(r);
+    // runs the "main" label
+    interpreter.run();
+
+    // // runs the label "some_label" with the arguments 1, 2 and 3
+    // interpreter.run("some_label",1,2,3);
+
+    // // runs the label "label_with_return" and unwraps the return value
+    // carescript::ScriptVariable value = interpreter.run("label_with_return").get_value();
+
+    interpreter.load(0); // loads the saved state with id 0
   std::clock_t c_end = std::clock();
 
   double time_elapsed_ms = 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC; //Calulate how much time taken
   std::cout << "CPU time used: " << time_elapsed_ms << " ms\n";
 }
-
 
 
 

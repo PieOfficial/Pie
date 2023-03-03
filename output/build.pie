@@ -1,0 +1,8 @@
+@main[]
+    echoln("This is the main function")
+    set(a,45)
+    echoln($a + 4)
+    echoln(call(foo,5))
+
+@foo[a]
+    return($a * 2)

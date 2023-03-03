@@ -2,10 +2,10 @@
 Pie is a free and open source build system designed for power, speed, and productivity. Pie is a general purpose build system that is both easy to use and efficient. It is simple in terms of syntax and provides quick build times! 
 
 Pie is written in C and C++, it's designed to be easy to use, extensible, and fast. Pie's syntax is similar to CMake (Another build system).
- - [Introduction](#Pie)
-- [Building](#Building)
-- [Licensing](#licensing)
-- [Credit](#Credit)
+- [***Pie***](#pie)
+  - [Building](#building)
+  - [Licensing ](#licensing-)
+  - [Credit](#credit)
 
 [![C/C++ CI](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml/badge.svg?branch=main&event=push)](https://github.com/PieOfficial/Pie/actions/workflows/c-cpp.yml)
 
@@ -34,4 +34,4 @@ Follow these steps to compile:
 ##  Licensing </p>
 Pie uses the MIT license. Please read the [license](https://github.com/PieOfficial/Pie/blob/main/LICENSE) carefully.
 ## Credit
-- [LabRicecat/CatCaretaker](https://github.com/LabRicecat/CatCaretaker "LabRicecat/CatCaretaker") For both the lexer and the parser
+- [CatCareTaker/carescript-api](https://github.com/CatCareTaker/carescript-api "CatCareTaker/carescript-api") For both the lexer and the parser
