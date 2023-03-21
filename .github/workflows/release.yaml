@@ -21,15 +21,11 @@ jobs:
        id: get_version
        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
      - name: ziping
-       run: dir
-     - name: ziping2
        run: powershell Compress-Archive ./output ./output.zip
-     - name: ziping3
-       run: dir
      - name: Release
        uses: softprops/action-gh-release@v1
        with:
           name: Release ${{ steps.get_version.outputs.VERSION }}
           fail_on_unmatched_files: true
           files: |
-            output/pie.exe
+            output.zip
