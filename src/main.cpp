@@ -30,11 +30,8 @@
 
 #include "argparse.hpp"
 
-//#include "core/parser.h"
 #include "script/carescript-api.hpp"
 
-
-//using namespace parser;
 using namespace std;
 
 using std::endl;
@@ -55,35 +52,33 @@ void read_pieScript() {
         while(ifile.good()) r += ifile.get();
         if(r != "") r.pop_back();
 
-    // creates a new interpreter instance
-    carescript::Interpreter interpreter;
+        // creates a new interpreter instance
+        carescript::Interpreter interpreter;
 
-    // save the current state as id 0
-    interpreter.save(0);
+        // save the current state as id 0
+        interpreter.save(0);
 
-    interpreter.on_error([](carescript::Interpreter& interp) {
-        std::cout << interp.error() << "\n";
         // This code executes when an error occurs
-    });
+        interpreter.on_error([](carescript::Interpreter &interp)
+                             { std::cout << interp.error() << "\n"; });
 
-    // pre processes the code
-    interpreter.pre_process(r);
-    // runs the "main" label
-    interpreter.run();
+        // pre processes the code
+        interpreter.pre_process(r);
 
-    // // runs the label "some_label" with the arguments 1, 2 and 3
-    // interpreter.run("some_label",1,2,3);
+        // runs the "main" label
+        interpreter.run();
+        // // runs the label "some_label" with the arguments 1, 2 and 3
+        // interpreter.run("some_label",1,2,3);
 
-    // // runs the label "label_with_return" and unwraps the return value
-    // carescript::ScriptVariable value = interpreter.run("label_with_return").get_value();
+        // // runs the label "label_with_return" and unwraps the return value
+        // carescript::ScriptVariable value = interpreter.run("label_with_return").get_value();
 
-    interpreter.load(0); // loads the saved state with id 0
-  std::clock_t c_end = std::clock();
+        interpreter.load(0); // loads the saved state with id 0
+        std::clock_t c_end = std::clock();
 
-  double time_elapsed_ms = 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC; //Calulate how much time taken
-  std::cout << "CPU time used: " << time_elapsed_ms << " ms\n";
+        double time_elapsed_ms = 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC; // Calulate how much time taken
+        std::cout << "CPU time used: " << time_elapsed_ms << " ms\n";
 }
-
 
 
 
