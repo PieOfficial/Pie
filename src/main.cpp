@@ -61,7 +61,18 @@ void read_pieScript(std::string filename) {
     interpreter.save(0);
 
     // This code executes when an error occurs
-    interpreter.on_error([](carescript::Interpreter &interp) {std::cout << interp.error() << "\n"; });
+    interpreter.on_error([](carescript::Interpreter &interp) {
+        #ifdef _WIN32
+            // Beep at 880 Hz (A5) for 100 milliseconds.
+            Beep(880, 100);
+            Sleep(100);
+
+            // Beep at 1760 Hz (B5) for 100 milliseconds.
+            Beep(1760, 100);
+            Sleep(100);
+        #endif
+        std::cout << interp.error() << "\n"; 
+    });
 
     // pre processes the code
     interpreter.pre_process(r);
@@ -142,23 +153,15 @@ int main(int argc, char *argv[]) {
     // Intialization
     // Initialize();
 
-    // #ifdef _WIN32
-    //     // Beep at 880 Hz (A5) for 100 milliseconds.
-    //     Beep(880, 100);
-    //     Sleep(100);
 
-    //     // Beep at 1760 Hz (B5) for 100 milliseconds.
-    //     Beep(1760, 100);
-    //     Sleep(100);
-    // #endif
 
     argparse::ArgumentParser program("pie");
 
     program.add_argument("--build")
         .help("build root dir")
-        .default_value(std::string("build.pie")) //
-        //.implicit_value(true)
-        .nargs(1);
+        .default_value(false) //std::string("build.pie")
+        .implicit_value(true);
+        //.nargs(1);
 
     program.add_argument("--download")
         .default_value(std::string("none"))
@@ -176,8 +179,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (program["--build"] == true) {
-        std::cerr << program.get<std::string>("--build") << std::endl;
-        read_pieScript(program.get<std::string>("--build")); //
+        read_pieScript("build.pie"); //program.get<std::string>("--build")
     }
     if (program["--download"] == true) {
         auto input = program.get<std::string>("--download");
