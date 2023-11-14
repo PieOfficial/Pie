@@ -10,12 +10,6 @@
 #include <chrono>
 
 
-// #include <mmsystem.h>
-
-/** C std library and Unix headers (mainly used in function doTask()) */
-#include <stdio.h>
-#include <stdlib.h>
-
 #ifdef _WIN32
 #include <windows.h>
 //#include "unistd.h"
@@ -110,59 +104,7 @@ void read_pieScript(std::string filename) {
     std::cout << "CPU time used: " << elapsed.count() << " ms\n";
 }
 
-// argparse::ArgumentParser program("test");
-
-// program.add_argument("--build")
-//     .help("build root dir")
-//     .default_value(false)
-//     .implicit_value(true);
-
-// try {
-//   program.parse_args(argc, argv);
-// } catch (const std::runtime_error& err) {
-//   std::cerr << err.what() << std::endl;
-//   std::cerr << program;
-//   std::exit(1);
-// }
-
-// if (program["--build"] == true) {
-//   //   std::cout << "Building" << std::endl;
-//   std::clock_t c_start = std::clock();  // Track Time Taken
-//   // Start read file
-//   std::string r;
-//   std::ifstream ifile("build.pie");
-//   while (ifile.good()) r += ifile.get();
-//   if (!r.empty()) r.pop_back();
-//   auto labels = into_labels(r);
-//   for (auto i : labels) {
-//     std::cout << i.first << " args: " << i.second.arglist.size()
-//               << " lines: " << i.second.lines.size() << "\n";
-//     std::cout << run_script(i.first, labels) << "\n";
-//   }
-//   std::clock_t c_end = std::clock();
-
-//   double time_elapsed_ms = 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC;
-//   std::cout << "CPU time used: " << time_elapsed_ms << " ms\n";
-// }
-
-// parser_class parser_class;
-// parser_class.parser_file("test.pie");
-
 int main(int argc, char *argv[]) {
-    //   jms::Spinner s("Doing something cool", jms::classic);
-    //   s = jms::Spinner("Now Starting the next task", jms::classic);
-    //   s.start();
-
-    //   this_thread::sleep_for(2s);
-    //   s.setAnimation(jms::dots);
-    //   this_thread::sleep_for(2s);
-
-    //   s.finish(jms::FinishedState::SUCCESS, "Failed to finish that task");
-    // Intialization
-    // Initialize();
-
-
-
     argparse::ArgumentParser program("pie");
 
     program.add_argument("--build")
