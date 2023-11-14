@@ -1,8 +1,22 @@
-@main[]
-    echoln("This is the main function")
-    set(a,45)
-    echoln($a + 4)
-    echoln(call(foo,5))
+@const[
+    the_answer = 12
+]
 
-@foo[a]
-    return($a * 2)
+@add[x,y]
+    return($x + $y)
+
+@mul[x,y]
+    if($y is 1 or $y is 0)
+        return($x)
+    endif()
+    if($y is 0)
+        return(0)
+    endif()
+
+    return(call(mul,$x,$y - 1) + $x)
+
+@main[]
+    echoln(call(add,8,8))
+    echoln(call(mul,8,8))
+    echoln("Hello, World!")
+    beep(880,100)

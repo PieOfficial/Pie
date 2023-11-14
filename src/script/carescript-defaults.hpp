@@ -3,6 +3,15 @@
 
 #include "carescript-defs.hpp"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+/*
+    Defines some default builtins, operators etc
+    So it can be used out of the box
+*/
+
 namespace carescript {
 
 inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
@@ -24,14 +33,14 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         settings.should_run.push(get_value<ScriptNumberValue>(args[0]) == true);
         return script_null;
     }}},
-    {"else",{0,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
+    {"else",{0,[](const ScriptArglist&, ScriptSettings& settings)->ScriptVariable {
         if(settings.should_run.empty()) {
             _cc_error("no if");
         }
         settings.should_run.top() = !settings.should_run.top();
         return script_null;
     }}},
-    {"endif",{0,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
+    {"endif",{0,[](const ScriptArglist&, ScriptSettings& settings)->ScriptVariable {
         if(settings.ignore_endifs != 0) {
             --settings.ignore_endifs;
             return script_null;
@@ -101,7 +110,6 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
             _cc_error("requires at least two arguments");
         }
         cc_builtin_var_requires(args[0],ScriptStringValue);
-        cc_builtin_var_requires(args[1],ScriptStringValue);
         std::string f;
         std::ifstream ifile;
         ifile.open(get_value<ScriptStringValue>(args[0]),std::ios::in);
@@ -112,21 +120,21 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         std::string label = get_value<ScriptStringValue>(args[1]);
         auto args2 = args;
         args2.erase(args.begin(),args.begin()+1);
+        args2.erase(args.begin(),args.begin()+1);
 
-        auto labels = pre_process(f,settings);
-        if(settings.error_msg != "") _cc_error(settings.error_msg);
-        if(labels.count(label) == 0) {
-            _cc_error("no such label");
-        }
-        auto lb = labels[label];
-        if(lb.arglist.size() > args2.size()) {
-            _cc_error("too few arguments");
-        }
-        else if(lb.arglist.size() < args2.size()) {
-            _cc_error("too many arguments");
-        }
-        run_label(label,labels,settings,"",{});
-        _cc_error(run_script(f,settings));
+        Interpreter interp;
+        interp.script_builtins = settings.interpreter.script_builtins;
+        interp.script_operators = settings.interpreter.script_operators;
+        interp.script_typechecks = settings.interpreter.script_typechecks;
+        interp.script_macros = settings.interpreter.script_macros;
+        interp.script_rawbuiltins = settings.interpreter.script_rawbuiltins;
+        interp.pre_process(f).on_error([&](Interpreter& i) {
+            settings.error_msg = i.error();
+        });
+        if(settings.error_msg != "") return script_null;
+        return interp.run(label,args2).on_error([&](Interpreter& i) {
+            settings.error_msg = i.error();
+        }).get_value_or(script_null);
     }}},
     {"exit",{1,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
         cc_builtin_if_ignore();
@@ -316,7 +324,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         if(get_value<ScriptNameValue>(args[0]) == "ERASE") {
             if(args.size() != 3) _cc_error("requires 3 arguments");
             cc_builtin_var_requires(args[2],ScriptNumberValue);
-            int idx = get_value<ScriptNumberValue>(args[2]);
+            auto idx = get_value<ScriptNumberValue>(args[2]);
             if(str.empty()) _cc_error("string empty");
             if(idx >= str.size()) _cc_error("index overflow");
             if(idx < 0) _cc_error("index undeflow");
@@ -328,7 +336,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
             if(args.size() != 4) _cc_error("requires 4 arguments");
             cc_builtin_var_requires(args[2],ScriptNumberValue);
             cc_builtin_var_requires(args[3],ScriptStringValue);
-            int idx = get_value<ScriptNumberValue>(args[2]);
+            auto idx = get_value<ScriptNumberValue>(args[2]);
             if(str.empty()) _cc_error("string empty");
             if(idx >= str.size()) _cc_error("index overflow");
             if(idx < 0) _cc_error("index undeflow");
@@ -340,7 +348,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
             if(args.size() != 4) _cc_error("requires 4 arguments");
             cc_builtin_var_requires(args[2],ScriptNumberValue);
             cc_builtin_var_requires(args[3],ScriptStringValue);
-            int idx = get_value<ScriptNumberValue>(args[2]);
+            auto idx = get_value<ScriptNumberValue>(args[2]);
             if(str.empty()) _cc_error("string empty");
             if(idx >= str.size()) _cc_error("index overflow");
             if(idx < 0) _cc_error("index undeflow");
@@ -363,7 +371,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
             if(args.size() != 3) _cc_error("requires 3 arguments");
             cc_builtin_var_requires(args[2],ScriptNumberValue);
             if(str.empty()) _cc_error("string empty");
-            int idx = get_value<ScriptNumberValue>(args[2]);
+            auto idx = get_value<ScriptNumberValue>(args[2]);
             if(idx >= str.size()) _cc_error("index overflow");
             if(idx < 0) _cc_error("index undeflow");
 
@@ -374,8 +382,8 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
             cc_builtin_var_requires(args[2],ScriptNumberValue);
             cc_builtin_var_requires(args[3],ScriptNumberValue);
             if(str.empty()) _cc_error("string empty");
-            int idx_from = get_value<ScriptNumberValue>(args[2]);
-            int idx_to = get_value<ScriptNumberValue>(args[3]);
+            auto idx_from = get_value<ScriptNumberValue>(args[2]);
+            auto idx_to = get_value<ScriptNumberValue>(args[3]);
             if(idx_from >= str.size()) _cc_error("index overflow");
             if(idx_from < 0) _cc_error("index undeflow");
             if(idx_to >= str.size()) _cc_error("index overflow");
@@ -394,22 +402,32 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
     {"bake",{1,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
         cc_builtin_if_ignore();
         cc_builtin_var_requires(args[0],ScriptStringValue);
-        return bake_extension(args[0].printable(),settings) ? script_true : script_false;
+        return bake_extension(get_value<ScriptStringValue>(args[0]),settings) ? script_true : script_false;
     }}},
     {"typeof",{1,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
         cc_builtin_if_ignore();
         return new ScriptStringValue(args[0].get_type());
     }}},
+
+    {"beep",{2,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
+        cc_builtin_if_ignore();
+        cc_builtin_var_requires(args[0],ScriptNumberValue);
+        cc_builtin_var_requires(args[1],ScriptNumberValue);
+        #ifdef _WIN32
+        Beep((int)get_value<ScriptNumberValue>(args[0]), (int)get_value<ScriptNumberValue>(args[1]));
+        #endif
+        return script_null;
+    }}},
 };
 
 inline std::vector<ScriptTypeCheck> default_script_typechecks = {
-    [](KittenToken src,ScriptSettings& settings)->ScriptValue* {
+    [](KittenToken src,ScriptSettings&)->ScriptValue* {
         if(src.str) {
             return new ScriptStringValue(src.src);
         }
         return nullptr;
     },
-    [](KittenToken src,ScriptSettings& settings)->ScriptValue* {
+    [](KittenToken src,ScriptSettings&)->ScriptValue* {
         if(src.str) return nullptr;
         try {
             return new ScriptNumberValue(std::stold(src.src));
@@ -417,12 +435,12 @@ inline std::vector<ScriptTypeCheck> default_script_typechecks = {
         catch(...) {}
         return nullptr;
     },
-    [](KittenToken src,ScriptSettings& settings)->ScriptValue* {
+    [](KittenToken src,ScriptSettings&)->ScriptValue* {
         if(src.str) return nullptr;
         if(src.src == "null") return new ScriptNullValue();
         return nullptr;
     },
-    [](KittenToken src,ScriptSettings& settings)->ScriptValue* {
+    [](KittenToken src,ScriptSettings&)->ScriptValue* {
         if(src.str || src.src.empty()) return nullptr;
         try { 
             std::stoi(std::string(1,src.src[0]));
@@ -440,7 +458,7 @@ inline std::vector<ScriptTypeCheck> default_script_typechecks = {
 };
 
 inline std::map<std::string,std::vector<ScriptOperator>> default_script_operators = {
-    {"+",{{0,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"+",{{0,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"+");
         cc_operator_var_requires(right,"+",ScriptNumberValue,ScriptStringValue);
         if(is_typeof<ScriptNumberValue>(right)) {
@@ -454,7 +472,7 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
                 );
         }
     }}}},
-    {"-",{{0,ScriptOperator::BOTH,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"-",{{0,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"-");
         cc_operator_var_requires(right,"-",ScriptNumberValue);
         ScriptVariable ret;
@@ -462,7 +480,7 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
                 get_value<ScriptNumberValue>(left) - get_value<ScriptNumberValue>(right)
             );
         return ret;
-    },[](ScriptVariable left, ScriptSettings& settings)->ScriptVariable {
+    }},{-3,ScriptOperator::UNARY,[](const ScriptVariable& left, const ScriptVariable&, ScriptSettings& settings)->ScriptVariable {
         cc_operator_var_requires(left,"-",ScriptNumberValue);
         ScriptVariable ret;
         ret = new ScriptNumberValue(
@@ -470,7 +488,7 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
             );
         return ret;
     }}}},
-    {"*",{{1,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"*",{{-1,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"*");
         cc_operator_var_requires(right,"*",ScriptNumberValue);
         ScriptVariable ret;
@@ -480,7 +498,7 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
 
         return ret;
     }}}},
-    {"/",{{1,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"/",{{-1,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"/");
         cc_operator_var_requires(right,"/",ScriptNumberValue);
         if(get_value<ScriptNumberValue>(right) == 0) {
@@ -493,7 +511,7 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
             );
         return ret;
     }}}},
-    {"^",{{1,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"^",{{-2,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"^");
         cc_operator_var_requires(right,"^",ScriptNumberValue);
         ScriptVariable ret;
@@ -503,21 +521,21 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
         return ret;
     }}}},
     
-    {"is",{{-1,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"is",{{2,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"is");
 
         return new ScriptNumberValue(
                 left == right ? true : false
             );
     }}}},
-    {"isnt",{{-1,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"isnt",{{2,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"isnt");
 
         return new ScriptNumberValue(
                 left == right ? false : true
             );
     }}}},
-    {"and",{{-2,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"and",{{3,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"and");
         cc_operator_var_requires(right,"and",ScriptNumberValue);
         
@@ -525,7 +543,7 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
                 (get_value<ScriptNumberValue>(left) == true && get_value<ScriptNumberValue>(right)) ? true : false
             );
     }}}},
-    {"or",{{-2,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"or",{{4,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"or");
         cc_operator_var_requires(right,"or",ScriptNumberValue);
                 
@@ -533,14 +551,14 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
                 (get_value<ScriptNumberValue>(left) == true || get_value<ScriptNumberValue>(right) == true) ? true : false
             );
     }}}},
-    {"more",{{-2,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"more",{{5,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"more");
         cc_operator_var_requires(right,"more",ScriptNumberValue);
         return new ScriptNumberValue(
                 (get_value<ScriptNumberValue>(left) > get_value<ScriptNumberValue>(right)) ? true : false
             );
     }}}},
-    {"less",{{-2,ScriptOperator::DOUBLE,[](ScriptVariable left, ScriptVariable right, ScriptSettings& settings)->ScriptVariable {
+    {"less",{{5,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"less");
         cc_operator_var_requires(right,"less",ScriptNumberValue);
         return new ScriptNumberValue(
@@ -548,13 +566,13 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
             );
     }}}},
     
-    {"not",{{99,ScriptOperator::UNARY,nullptr,[](ScriptVariable left, ScriptSettings& settings)->ScriptVariable {
+    {"not",{{-4,ScriptOperator::UNARY,[](const ScriptVariable& left, const ScriptVariable&, ScriptSettings& settings)->ScriptVariable {
         cc_operator_var_requires(left,"not",ScriptNumberValue);
         return new ScriptNumberValue(
                 !get_value<ScriptNumberValue>(left)
             );
     }}}},
-    {"$",{{999,ScriptOperator::UNARY,nullptr,[](ScriptVariable left, ScriptSettings& settings)->ScriptVariable {
+    {"$",{{-5,ScriptOperator::UNARY,[](const ScriptVariable& left, const ScriptVariable&, ScriptSettings& settings)->ScriptVariable {
         cc_operator_var_requires(left,"$",ScriptNameValue);
         ScriptVariable ret;
         std::string v = get_value<ScriptNameValue>(left);

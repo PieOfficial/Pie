@@ -90,6 +90,8 @@
         "random": "cpp",
         "string_view": "cpp",
         "shared_mutex": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "ranges": "cpp",
+        "span": "cpp"
     }
 }
