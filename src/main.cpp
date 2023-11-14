@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <chrono>
 
-// #include <windows.h>
+
 // #include <mmsystem.h>
 
 /** C std library and Unix headers (mainly used in function doTask()) */
@@ -62,15 +62,23 @@ void read_pieScript(std::string filename) {
 
     // This code executes when an error occurs
     interpreter.on_error([](carescript::Interpreter &interp) {
-        #ifdef _WIN32
-            // Beep at 880 Hz (A5) for 100 milliseconds.
-            Beep(880, 100);
-            Sleep(100);
+        // #ifdef _WIN32
+        // // Beep at 200 Hz for 500 milliseconds.
+        // Beep(200, 500);
 
-            // Beep at 1760 Hz (B5) for 100 milliseconds.
-            Beep(1760, 100);
-            Sleep(100);
-        #endif
+        // // Beep at 400 Hz for 500 milliseconds.
+        // Beep(400, 500);
+
+        // // Beep at 600 Hz for 500 milliseconds.
+        // Beep(600, 500);
+        // // Define an array of frequencies to use.
+        // int frequencies[] = {500, 1000, 1500, 2000};
+
+        // // Loop through the frequencies and play a beep sound at each one.
+        // for (int i = 0; i < sizeof(frequencies) / sizeof(frequencies[0]); i++) {
+        //     Beep(frequencies[i], 100); // Beep for 100 milliseconds.
+        // }
+        // #endif
         std::cout << interp.error() << "\n"; 
     });
 
