@@ -28,7 +28,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
             return script_null; 
         }
         
-        cc_builtin_var_requires(args[0],ScriptNumberValue);
+        cc_builtin_var_requires(args[0], ScriptNumberValue);
         
         settings.should_run.push(get_value<ScriptNumberValue>(args[0]) == true);
         return script_null;
@@ -144,7 +144,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
     }}},
     {"system",{1,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
         cc_builtin_if_ignore();
-        cc_builtin_var_requires(args[0],ScriptStringValue);
+        cc_builtin_var_requires(args[0], ScriptStringValue);
         system((get_value<ScriptStringValue>(args[0])).c_str());
         return script_null;
     }}},
@@ -411,8 +411,8 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
 
     {"beep",{2,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
         cc_builtin_if_ignore();
-        cc_builtin_var_requires(args[0],ScriptNumberValue);
-        cc_builtin_var_requires(args[1],ScriptNumberValue);
+        cc_builtin_var_requires(args[0], ScriptNumberValue);
+        cc_builtin_var_requires(args[1], ScriptNumberValue);
         #ifdef _WIN32
         Beep((int)get_value<ScriptNumberValue>(args[0]), (int)get_value<ScriptNumberValue>(args[1]));
         #endif

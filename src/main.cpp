@@ -24,6 +24,7 @@
 #include "argparse.hpp"
 
 #include "script/carescript-api.hpp"
+#include "core/console/colored_cout.h"
 
 using namespace std;
 using namespace chrono;
@@ -73,7 +74,7 @@ void read_pieScript(std::string filename) {
         //     Beep(frequencies[i], 100); // Beep for 100 milliseconds.
         // }
         // #endif
-        std::cout << interp.error() << "\n"; 
+        std::cout << RED << interp.error() << NC << std::endl; 
     });
 
     // pre processes the code
