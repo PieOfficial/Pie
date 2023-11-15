@@ -24,7 +24,7 @@ class KittenLexer {
     storage as_newline;
     storage extracts;
     storage lineskips;
-    std::map<char,char> backslash_opts;
+    std::map<char, char> backslash_opts;
     bool erase_emptys = false;
     bool ignore_backslash_ops = false;
     bool failbit = false;  // Flag indicating lexer failure
@@ -45,7 +45,7 @@ class KittenLexer {
      *
      * @return true if the character matches any of the conditions, false otherwise
      */
-    inline bool match_con_any(conditional_storage f, char c) {
+    inline bool match_con_any(const conditional_storage& f, char c) {
         for(auto i : f) if(i(c)) return true;
         return false;
     }
@@ -177,7 +177,7 @@ public:
      *
      * @throws ErrorType if there is an error during lexing
      */
-    inline lexed_kittens lex(std::string src) {
+    inline lexed_kittens lex(std::string src) { //const &
         lexed_kittens ret;  // Resulting vector of KittenTokens
         std::stack<char> opens; // Stack to track opening capsule characters
         std::stack<char> stringqs;  // Stack to track string quote characters

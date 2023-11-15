@@ -9,7 +9,6 @@
 #include <unordered_set>
 #include <chrono>
 
-
 #ifdef _WIN32
 #include <windows.h>
 //#include "unistd.h"
@@ -25,6 +24,8 @@
 
 #include "script/carescript-api.hpp"
 #include "core/console/colored_cout.h"
+
+#include "script/test.hpp"
 
 using namespace std;
 using namespace chrono;

@@ -265,7 +265,7 @@ inline std::vector<ScriptVariable> parse_argumentlist(std::string source, Script
 
     std::vector<ScriptVariable> ret;
     for(auto i : args) {
-        ret.push_back(evaluate_expression(i,settings));
+        ret.push_back(evaluate_expression(i, settings));
         if(settings.error_msg != "") return {};
     }
     return ret;
@@ -297,7 +297,7 @@ struct _expressionFuncall {
 
     inline ScriptVariable call(ScriptSettings& settings, _expressionErrors& errors) noexcept {
         if(settings.interpreter.has_builtin(function)) {
-            ScriptArglist args = parse_argumentlist(arguments,settings);
+            ScriptArglist args = parse_argumentlist(arguments, settings);
             ScriptBuiltin fun = settings.interpreter.get_builtin(function);
             if(settings.error_msg != "") {
                 errors.push("error parsing argumentlist: " + settings.error_msg);
@@ -317,14 +317,14 @@ struct _expressionFuncall {
                 }
             }
             settings.error_msg = "";
-            ScriptVariable ret =  fun.exec(args,settings);
+            ScriptVariable ret =  fun.exec(args, settings);
             if(settings.error_msg != "") errors.push(settings.error_msg);
             return ret;
         }
         else {
             ScriptRawBuiltin rawbuiltin = settings.interpreter.get_rawbuiltin(function);
-            std::string argcpy = arguments.substr(1,arguments.size()-2);
-            auto ret = rawbuiltin(argcpy,settings);
+            std::string argcpy = arguments.substr(1, arguments.size() - 2);
+            auto ret = rawbuiltin(argcpy, settings);
             if(settings.error_msg != "") {
                 errors.push("error evaluating rawbuiltin \"" + function + "\": " + settings.error_msg);
                 settings.error_msg = "";
@@ -352,13 +352,13 @@ struct _operatorToken {
             case VAL:
                 return val;
             case CALL:
-                return call.call(settings,errors);
+                return call.call(settings, errors);
             case CAPSULE:
                 {
                     std::string capsule_copy = capsule;
                     capsule_copy.erase(capsule_copy.begin());
                     capsule_copy.pop_back();
-                    ScriptVariable value = evaluate_expression(capsule_copy,settings);
+                    ScriptVariable value = evaluate_expression(capsule_copy, settings);
                     if(settings.error_msg != "") {
                         errors.push("Error while parsing " + capsule + ": " + settings.error_msg);
                         settings.error_msg = "";
@@ -379,8 +379,8 @@ inline static std::vector<_operatorToken> expression_prepare_tokens(lexed_kitten
     for(size_t i = 0; i < tokens.size(); ++i) {
         auto token = tokens[i];
         std::string r = token.src;
-        if(!token.str && is_operator(token.src,settings)) {
-            ret.push_back(_expressionToken{r,ScriptOperator()});
+        if(!token.str && is_operator(token.src, settings)) {
+            ret.push_back(_expressionToken{r, ScriptOperator()});
         }
         else if(!token.str && token.src[0] == '(') {
             ret.push_back(token.src);
@@ -400,7 +400,7 @@ inline static std::vector<_operatorToken> expression_prepare_tokens(lexed_kitten
             ++i;
         }
         else {
-            ret.push_back(to_var(token,settings));
+            ret.push_back(to_var(token, settings));
             if(is_null(ret.back().val)) {
                 if(token.str) token.src = "\"" + token.src + "\"";
                 errors.push("invalid literal: " + token.src);
@@ -420,7 +420,7 @@ inline static ScriptVariable expression_check_prec(std::vector<_operatorToken> m
     _operatorToken lhs = markedupTokens[state++];
         
     if(lhs.type == lhs.OP) {
-        lhs = lhs.op.op.run(expression_check_prec(markedupTokens, state, lhs.op.op.priority, settings, errors),script_null,settings);
+        lhs = lhs.op.op.run(expression_check_prec(markedupTokens, state, lhs.op.op.priority, settings, errors), script_null,settings);
         if(settings.error_msg != "") {
             errors.push(settings.error_msg); 
             settings.error_msg = "";
@@ -445,7 +445,7 @@ inline static ScriptVariable expression_check_prec(std::vector<_operatorToken> m
         ScriptVariable rhs = expression_check_prec(markedupTokens, state, op.priority, settings, errors);
         if(errors.changed()) return script_null;
 
-        ScriptVariable old_lhs = lhs.get_val(settings,errors);
+        ScriptVariable old_lhs = lhs.get_val(settings, errors);
         if(errors.changed()) return script_null;
         lhs.type = lhs.VAL;
         lhs.val = op.run(old_lhs, rhs, settings);
@@ -455,7 +455,7 @@ inline static ScriptVariable expression_check_prec(std::vector<_operatorToken> m
             return script_null;
         }
     }
-    return lhs.get_val(settings,errors);
+    return lhs.get_val(settings, errors);
 }
 
 inline static bool valid_expression(std::vector<_operatorToken> markedupTokens, ScriptSettings& settings) noexcept {

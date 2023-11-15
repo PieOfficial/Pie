@@ -399,17 +399,17 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         return script_null;
     }}},
 
-    {"bake",{1,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
+    {"bake",{1,[](const ScriptArglist& args, ScriptSettings& settings) -> ScriptVariable {
         cc_builtin_if_ignore();
         cc_builtin_var_requires(args[0],ScriptStringValue);
         return bake_extension(get_value<ScriptStringValue>(args[0]),settings) ? script_true : script_false;
     }}},
-    {"typeof",{1,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
+    {"typeof",{1,[](const ScriptArglist& args, ScriptSettings& settings) -> ScriptVariable {
         cc_builtin_if_ignore();
         return new ScriptStringValue(args[0].get_type());
     }}},
 
-    {"beep",{2,[](const ScriptArglist& args, ScriptSettings& settings)->ScriptVariable {
+    {"beep",{2,[](const ScriptArglist& args, ScriptSettings& settings) -> ScriptVariable {
         cc_builtin_if_ignore();
         cc_builtin_var_requires(args[0], ScriptNumberValue);
         cc_builtin_var_requires(args[1], ScriptNumberValue);
@@ -417,6 +417,30 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         Beep((int)get_value<ScriptNumberValue>(args[0]), (int)get_value<ScriptNumberValue>(args[1]));
         #endif
         return script_null;
+    }}},
+    {"exists",{2,[](const ScriptArglist& args, ScriptSettings& settings) -> ScriptVariable {
+        cc_builtin_if_ignore();
+        cc_builtin_var_requires(args[0],ScriptNameValue);
+        cc_builtin_var_requires(args[1],ScriptStringValue);
+
+        std::string type = get_value<ScriptNameValue>(args[0]);
+        std::string path = get_value<ScriptStringValue>(args[1]);
+
+        std::filesystem::path file(path);
+
+        if (type == "FILE" || type == "DIRECTORY") {
+            if (std::filesystem::exists(file)) {
+                return script_true;
+            }
+        } else if (type == "VARIABLE") {
+            if (settings.variables.count(path) != 0) {
+                return script_true;
+            }
+        } else {
+            _cc_error("unknown enum: " + type);
+        }
+
+        return script_false;
     }}},
 };
 

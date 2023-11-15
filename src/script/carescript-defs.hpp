@@ -659,7 +659,7 @@ extern "C" { \
     } \
 }
 
-using BuiltinList = std::unordered_map<std::string,ScriptBuiltin>;
+using BuiltinList = std::unordered_map<std::string, ScriptBuiltin>;
 using OperatorList = std::unordered_map<std::string,std::vector<ScriptOperator>>;
 using MacroList = std::unordered_map<std::string,std::string>;
 using TypeList = std::vector<ScriptTypeCheck>;

@@ -78,7 +78,7 @@ struct ScriptStringValue : public ScriptValue {
     ScriptValue* copy() const noexcept override { return new ScriptStringValue(string); }
 
     ScriptStringValue() {}
-    ScriptStringValue(std::string str): string(str) {}
+    ScriptStringValue(const std::string& str): string(str) {}
 
     operator std::string() const noexcept { return get_value(); }
 };
