@@ -494,7 +494,6 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
                 *var = args[1];
                 return script_null;
     }}}
-    // TODO: implement function that returns File list from a directory
     // TODO: implement function that deletes a variable
 };
 
