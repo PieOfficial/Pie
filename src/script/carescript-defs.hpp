@@ -20,7 +20,7 @@
 namespace carescript {
 
 template<typename Tp>
-concept ScriptValueType = std::is_base_of<carescript::ScriptValue,Tp>::value;
+concept ScriptValueType = std::is_base_of<carescript::ScriptValue, Tp>::value;
 
 // Wrapper class to perfom tasks on a
 // subclass of the abstract class "ScriptValue"
@@ -88,7 +88,7 @@ inline static bool is_same_type() noexcept {
 }
 
 // checks if two ScriptVariable instances have the same type
-inline static bool is_same_type(const ScriptVariable& v1,const ScriptVariable& v2) noexcept {
+inline static bool is_same_type(const ScriptVariable& v1, const ScriptVariable& v2) noexcept {
     return v1.get_type() == v2.get_type();
 }
 
@@ -120,9 +120,9 @@ struct ScriptSettings {
     int line = 0;
     bool exit = false;
     std::stack<bool> should_run;
-    std::map<std::string,ScriptVariable> variables;
-    std::map<std::string,ScriptVariable> constants;
-    std::map<std::string,ScriptLabel> labels;
+    std::map<std::string, ScriptVariable> variables;
+    std::map<std::string, ScriptVariable> constants;
+    std::map<std::string, ScriptLabel> labels;
     std::filesystem::path parent_path;
     int ignore_endifs = 0;
     ScriptVariable return_value = script_null;
@@ -131,10 +131,9 @@ struct ScriptSettings {
     bool raw_error = false;
     std::stack<std::string> label;
 
-    std::map<std::string,std::any> storage;
+    std::map<std::string, std::any> storage;
 
     ScriptSettings(Interpreter& i): interpreter(i) {}
-
     inline void clear() noexcept {
         line = 0;
         exit = false;
@@ -164,7 +163,7 @@ struct ScriptOperator {
 
 using ScriptArglist = std::vector<ScriptVariable>;
 // simple C-like replacement macro, not recursive
-using ScriptMacro = std::pair<std::string,std::string>;
+using ScriptMacro = std::pair<std::string, std::string>;
 // instead of evaluated arguments, this get's the raw input
 using ScriptRawBuiltin = ScriptVariable(*)(const std::string& source, ScriptSettings& settings);
 // tries to evaluate a string into a variable, nullptr if fauled
@@ -185,12 +184,12 @@ struct ScriptLabel {
     int line = 0;
 };
 
-extern std::map<std::string,ScriptBuiltin> default_script_builtins;
-extern std::map<std::string,std::vector<ScriptOperator>> default_script_operators;
+extern std::map<std::string, ScriptBuiltin> default_script_builtins;
+extern std::map<std::string, std::vector<ScriptOperator>> default_script_operators;
 extern std::vector<ScriptTypeCheck> default_script_typechecks;
-extern std::unordered_map<std::string,std::string> default_script_macros;
+extern std::unordered_map<std::string, std::string> default_script_macros;
 
-using ScriptPreProcess = std::function<void(const lexed_kittens&,std::vector<lexed_kittens>&,size_t,ScriptSettings&)>;
+using ScriptPreProcess = std::function<void(const lexed_kittens&, std::vector<lexed_kittens>&, size_t, ScriptSettings&)>;
 extern std::unordered_map<std::string, ScriptPreProcess> default_script_preprocesses;
 
 // bakes an extension into the interpreter
@@ -205,7 +204,7 @@ inline static std::string run_script(const std::string& source, ScriptSettings& 
 inline static std::string run_label(const std::string& label_name, std::map<std::string, ScriptLabel> labels, ScriptSettings& settings, const std::filesystem::path& parent_path, const std::vector<ScriptVariable>& args) noexcept;
 
 // preprocesses the file into the interpreter
-inline static std::map<std::string,ScriptLabel> pre_process(const std::string& source, ScriptSettings& settings) noexcept;
+inline static std::map<std::string, ScriptLabel> pre_process(const std::string& source, ScriptSettings& settings) noexcept;
 inline static std::vector<ScriptVariable> parse_argumentlist(std::string source, ScriptSettings& settings) noexcept;
 // evaluates an expression and returns the result
 inline static  ScriptVariable evaluate_expression(const std::string& source, ScriptSettings& settings) noexcept;
@@ -324,24 +323,24 @@ public:
 class Interpreter;
 // storage class to temporarily store states of the interpreter
 struct InterpreterState {
-    std::map<std::string,ScriptBuiltin> script_builtins;
-    std::map<std::string,std::vector<ScriptOperator>> script_operators;
+    std::map<std::string, ScriptBuiltin> script_builtins;
+    std::map<std::string, std::vector<ScriptOperator>> script_operators;
     std::vector<ScriptTypeCheck> script_typechecks;
-    std::unordered_map<std::string,std::string> script_macros;
-    std::unordered_map<std::string,ScriptRawBuiltin> script_rawbuiltins;
-    std::unordered_map<std::string,ScriptPreProcess> script_preprocesses;
+    std::unordered_map<std::string, std::string> script_macros;
+    std::unordered_map<std::string, ScriptRawBuiltin> script_rawbuiltins;
+    std::unordered_map<std::string, ScriptPreProcess> script_preprocesses;
 
     LexerCollection lexers;
 
     InterpreterState() {}
     InterpreterState(const Interpreter& interp) { save(interp); }
     InterpreterState(
-        const std::map<std::string,ScriptBuiltin>& a,
-        const std::map<std::string,std::vector<ScriptOperator>>& b,
+        const std::map<std::string, ScriptBuiltin>& a,
+        const std::map<std::string, std::vector<ScriptOperator>>& b,
         const std::vector<ScriptTypeCheck>& c,
-        const std::unordered_map<std::string,std::string>& d,
-        const std::unordered_map<std::string,ScriptRawBuiltin>& e,
-        std::unordered_map<std::string,ScriptPreProcess> f,
+        const std::unordered_map<std::string, std::string>& d,
+        const std::unordered_map<std::string, ScriptRawBuiltin>& e,
+        std::unordered_map<std::string, ScriptPreProcess> f,
         const LexerCollection& g):
         script_builtins(a),
         script_operators(b),
@@ -354,11 +353,11 @@ struct InterpreterState {
     inline void load(Interpreter& interp) const noexcept;
     inline void save(const Interpreter& interp) noexcept;
 
-    inline InterpreterState& operator=(const std::map<std::string,ScriptBuiltin>& a) noexcept {
+    inline InterpreterState& operator=(const std::map<std::string, ScriptBuiltin>& a) noexcept {
         script_builtins = a;
         return *this;
     }
-    inline InterpreterState& operator=(const std::map<std::string,std::vector<ScriptOperator>>& a) noexcept {
+    inline InterpreterState& operator=(const std::map<std::string, std::vector<ScriptOperator>>& a) noexcept {
         script_operators = a;
         return *this;
     }
@@ -366,15 +365,15 @@ struct InterpreterState {
         script_typechecks = a;
         return *this;
     }
-    inline InterpreterState& operator=(const std::unordered_map<std::string,std::string>& a) noexcept {
+    inline InterpreterState& operator=(const std::unordered_map<std::string, std::string>& a) noexcept {
         script_macros = a;
         return *this;
     }
-    inline InterpreterState& operator=(const std::unordered_map<std::string,ScriptRawBuiltin>& a) noexcept {
+    inline InterpreterState& operator=(const std::unordered_map<std::string, ScriptRawBuiltin>& a) noexcept {
         script_rawbuiltins = a;
         return *this;
     }
-    inline InterpreterState& operator=(const std::unordered_map<std::string,ScriptPreProcess>& a) noexcept {
+    inline InterpreterState& operator=(const std::unordered_map<std::string, ScriptPreProcess>& a) noexcept {
         script_preprocesses = a;
         return *this;
     }
@@ -383,11 +382,11 @@ struct InterpreterState {
         return *this;
     }
 
-    inline InterpreterState& add(const std::map<std::string,ScriptBuiltin>& a) noexcept {
-        script_builtins.insert(a.begin(),a.end());
+    inline InterpreterState& add(const std::map<std::string, ScriptBuiltin>& a) noexcept {
+        script_builtins.insert(a.begin(), a.end());
         return *this;
     }
-    inline InterpreterState& add(const std::map<std::string,std::vector<ScriptOperator>>& a) noexcept {
+    inline InterpreterState& add(const std::map<std::string, std::vector<ScriptOperator>>& a) noexcept {
         for(auto& i : script_operators) {
             for(auto j : a.at(i.first)) {
                 i.second.push_back(j);
@@ -401,15 +400,15 @@ struct InterpreterState {
         }
         return *this;
     }
-    inline InterpreterState& add(const std::unordered_map<std::string,std::string>& a) noexcept {
+    inline InterpreterState& add(const std::unordered_map<std::string, std::string>& a) noexcept {
         script_macros.insert(a.begin(), a.end());
         return *this;
     }
-    inline InterpreterState& add(const std::unordered_map<std::string,ScriptRawBuiltin>& a) noexcept {
+    inline InterpreterState& add(const std::unordered_map<std::string, ScriptRawBuiltin>& a) noexcept {
         script_rawbuiltins.insert(a.begin(), a.end());
         return *this;
     }
-    inline InterpreterState& add(const std::unordered_map<std::string,ScriptPreProcess>& a) noexcept {
+    inline InterpreterState& add(const std::unordered_map<std::string, ScriptPreProcess>& a) noexcept {
         script_preprocesses.insert(a.begin(), a.end());
         return *this;
     }
@@ -438,19 +437,19 @@ struct ExtensionData;
 // wrapper and storage class for a simpler API usage
 class Interpreter {
     std::vector<ExtensionData> extensions;
-    std::map<int,InterpreterState> states;
+    std::map<int, InterpreterState> states;
     std::function<void(Interpreter&)> on_error_f;
 
     inline void error_check() {
         if(settings.error_msg != "" && on_error_f) on_error_f(*this);
     }
 public:
-    std::map<std::string,ScriptBuiltin> script_builtins = default_script_builtins;
-    std::map<std::string,std::vector<ScriptOperator>> script_operators = default_script_operators;
+    std::map<std::string, ScriptBuiltin> script_builtins = default_script_builtins;
+    std::map<std::string, std::vector<ScriptOperator>> script_operators = default_script_operators;
     std::vector<ScriptTypeCheck> script_typechecks = default_script_typechecks;
-    std::unordered_map<std::string,std::string> script_macros = default_script_macros;
-    std::unordered_map<std::string,ScriptPreProcess> script_preprocesses;
-    std::unordered_map<std::string,ScriptRawBuiltin> script_rawbuiltins;
+    std::unordered_map<std::string, std::string> script_macros = default_script_macros;
+    std::unordered_map<std::string, ScriptPreProcess> script_preprocesses;
+    std::unordered_map<std::string, ScriptRawBuiltin> script_rawbuiltins;
     
     LexerCollection lexer;
     ScriptSettings settings = ScriptSettings(*this);
@@ -717,11 +716,11 @@ extern "C" { \
 }
 
 using BuiltinList = std::unordered_map<std::string, ScriptBuiltin>;
-using OperatorList = std::unordered_map<std::string,std::vector<ScriptOperator>>;
-using MacroList = std::unordered_map<std::string,std::string>;
+using OperatorList = std::unordered_map<std::string, std::vector<ScriptOperator>>;
+using MacroList = std::unordered_map<std::string, std::string>;
 using TypeList = std::vector<ScriptTypeCheck>;
-using RawBuiltinList = std::unordered_map<std::string,ScriptRawBuiltin>;
-using PreProcList = std::unordered_map<std::string,ScriptPreProcess>;
+using RawBuiltinList = std::unordered_map<std::string, ScriptRawBuiltin>;
+using PreProcList = std::unordered_map<std::string, ScriptPreProcess>;
 
 // abstract class to provide an interface for extensions
 class Extension {

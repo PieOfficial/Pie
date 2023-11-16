@@ -2,13 +2,11 @@
 #include <iostream>
 #include <ctime>
 #include <fstream>
-#include <sstream>
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include <chrono>
-
 
 #ifdef _WIN32
 #include <windows.h>
@@ -35,8 +33,6 @@ using std::endl;
 using std::getline;  /** reads a line from a file and puts it in a string */
 using std::ifstream; /** class representing a file to read */
 using std::ostream;
-using std::unordered_map; /** C++'s hash table */
-using std::unordered_set; /** C++'s hash set */
 
 void read_pieScript(std::string filename) {
     // Start the timer
