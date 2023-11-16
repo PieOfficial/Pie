@@ -442,6 +442,60 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
 
         return script_false;
     }}},
+    // usage: push(list,to_push1,to_push2,...)
+    {"push",{-1,[](const ScriptArglist& args,ScriptSettings& settings)->ScriptVariable {
+        cc_builtin_if_ignore();
+        // Note how we can already use "ListType" here as any other type
+        cc_builtin_var_requires(args[0],ListType);
+        cc_builtin_arg_min(args,2);
+        ListType list = get_value<ListType>(args[0]);
+        for(size_t i = 1; i < args.size(); ++i) {
+            list.list.push_back(args[i]);
+        }
+        return new ListType(list);
+    }}},
+    // usage: pop(list,[times])
+    {"pop",{-1,[](const ScriptArglist& args,ScriptSettings& settings)->ScriptVariable {
+        cc_builtin_if_ignore();
+        cc_builtin_var_requires(args[0],ListType);
+        cc_builtin_arg_range(args,1,2);
+        size_t count = 1;
+        if(args.size() == 2) {
+            cc_builtin_var_requires(args[1],ScriptNumberValue);
+            count = (size_t)get_value<ScriptNumberValue>(args[1]);
+        }
+        ListType list = get_value<ListType>(args[0]);
+        _cc_error_if(list.list.size() <= count,"popped not existing element (size below 0)");
+        for(size_t i = 0; i < count; ++i) list.list.pop_back();
+        return new ListType(list);
+    }}},
+    {"list_size",{1,[](const ScriptArglist& args,ScriptSettings& settings)->ScriptVariable {
+        cc_builtin_if_ignore();
+        cc_builtin_var_requires(args[0],ListType);
+        ListType list = get_value<ListType>(args[0]);
+        return new ScriptNumberValue(list.list.size());
+    }}},
+    {"deref",{1,[](const ScriptArglist& args,ScriptSettings& settings)->ScriptVariable {
+                cc_builtin_if_ignore();
+                cc_builtin_var_requires(args[0],ReferenceType);
+                ReferenceType ref = get_value<ReferenceType>(args[0]);
+                return ref.get_value()->value->copy();
+    }}},
+    {"ref",{1,[](const ScriptArglist& args,ScriptSettings& settings)->ScriptVariable {
+                cc_builtin_if_ignore();
+                cc_builtin_var_requires(args[0],ScriptNameValue);
+                ScriptVariable& var = settings.variables[get_value<ScriptNameValue>(args[0])];
+                return new ReferenceType(var);
+    }}},
+    {"setref",{2,[](const ScriptArglist& args,ScriptSettings& settings)->ScriptVariable {
+                cc_builtin_if_ignore();
+                cc_builtin_var_requires(args[0],ReferenceType);
+                ScriptVariable* var = get_value<ReferenceType>(args[0]);
+                *var = args[1];
+                return script_null;
+    }}}
+    // TODO: implement function that returns File list from a directory
+    // TODO: implement function that deletes a variable
 };
 
 inline std::vector<ScriptTypeCheck> default_script_typechecks = {
@@ -479,6 +533,27 @@ inline std::vector<ScriptTypeCheck> default_script_typechecks = {
         }
         return new ScriptNameValue(src.src);
     },
+    [](KittenToken src, ScriptSettings& settings)->ScriptValue* {
+        if(src.str) return nullptr; // on error, return a nullptr
+        KittenLexer lx = KittenLexer()
+        .add_capsule('[',']')
+        .add_ignore(',') // set commas as ignored
+        .add_ignore(' ') // set whitespaces as ignored
+        .erase_empty()
+        .add_stringq('"');
+        auto lex1 = lx.lex(src.src);
+        if(lex1.size() != 1) return nullptr;
+        lex1[0].src.erase(lex1[0].src.begin());
+        lex1[0].src.erase(lex1[0].src.end()-1);
+
+        auto plist = lx.lex(lex1[0].src);
+        ListType list;
+        for(auto i : plist) {
+            if(i.str) i.src = "\"" + i.src + "\"";
+            list.list.push_back(evaluate_expression(i.src,settings));
+        }
+        return new ListType(list.list);
+    },
 };
 
 inline std::map<std::string,std::vector<ScriptOperator>> default_script_operators = {
@@ -495,6 +570,15 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
                     get_value<ScriptStringValue>(left) + get_value<ScriptStringValue>(right)
                 );
         }
+    }}}},
+    // adds a "+" operator to join lists together
+    {"+",{{0,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
+        cc_operator_same_type(right,left,"+");
+        cc_operator_var_requires(right,"+",ListType);
+        auto lvec = get_value<ListType>(left);
+        auto rvec = get_value<ListType>(right);
+        for(auto& i : rvec) lvec.push_back(i);
+        return new ListType(lvec);
     }}}},
     {"-",{{0,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
         cc_operator_same_type(right,left,"-");

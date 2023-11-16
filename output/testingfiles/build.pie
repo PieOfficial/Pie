@@ -1,0 +1,22 @@
+@const[
+    g = ref(file_list)
+]
+
+@runing[file]
+    echoln($file)
+    
+
+@start[]
+    if(to_number(list_size(deref($g))) isnt 0)
+       call(runing, pop(deref($g), 1))
+       echoln($g)
+       setref($g, pop(deref($g), 1))
+       echoln($g)
+       call(start)
+    endif()
+
+
+@main[]
+    
+    setref($g, ["file1", "file2", "file3"])
+    call(start)

@@ -1,3 +1,4 @@
+
 @const[
     the_answer = 12
 ]
@@ -15,8 +16,13 @@
 
     return(call(mul,$x,$y - 1) + $x)
 
+# this is a comment
 @main[]
-    set(hi,["hi"])
+    set(hi,["hello", "yay4", "abc def"]) 
+    echoln($hi)
+    set(hi,push($hi, "yay", "c"))
+    echoln($hi)
+    echoln(pop($hi, 1))
     echoln($hi)
     echoln(exists(FILE, "testfile.txt"))
     echoln(call(add,8,8))

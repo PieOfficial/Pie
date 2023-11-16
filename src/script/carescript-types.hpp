@@ -21,6 +21,8 @@ struct ScriptValue {
     virtual ~ScriptValue() {};
 };
 
+
+
 // default number type implementation
 struct ScriptNumberValue : public ScriptValue {
     const std::string get_type() const noexcept override { return "Number"; }

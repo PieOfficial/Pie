@@ -264,6 +264,63 @@ struct LexerCollection {
     std::function<lexed_kittens(const std::string&)> p_preprocess = [&](const std::string& s){ return preprocess.lex(s); };
 };
 
+struct ListType : public ScriptValue {
+    using val_t = std::vector<ScriptVariable>;
+    val_t list;
+
+    val_t get_value() const noexcept { return list; }
+    val_t& get_value() noexcept { return list; }
+    const std::string get_type() const noexcept override { return "List"; }
+    bool operator==(const ScriptValue* p) const noexcept override {
+        return p->get_type() == get_type() && ((ListType*)p)->get_value() == get_value();
+    };
+    std::string to_printable() const noexcept override {
+        std::string s = "[";
+        for(auto i : list) {
+            s += i.string() + ",";
+        }
+        if(s != "[") s.pop_back();
+        return s + "]";
+    }
+    std::string to_string() const noexcept override {
+        return to_printable();
+    }
+    ScriptValue* copy() const noexcept override {
+        return new ListType(list);
+    }
+
+    ListType() {}
+    ListType(val_t v) : list(v) {}
+};
+
+class ReferenceType : public ScriptValue {
+public:
+    ScriptVariable* ref;
+
+    ScriptVariable* get_value() const { return ref; }
+    ScriptVariable* get_value() { return ref; }
+    const std::string get_type() const noexcept override { return "Reference"; }
+    bool operator==(const ScriptValue* p) const noexcept {
+        return false;
+    };
+    std::string to_printable() const noexcept {
+        return "ref(" + ref->printable() + ")";
+    }
+    std::string to_string() const noexcept {
+        return to_printable();
+    }
+    ScriptValue* copy() const noexcept {
+        ReferenceType* a = new ReferenceType;
+        a->ref = ref;
+        return a;
+    }
+
+    ReferenceType() {}
+    ReferenceType(ScriptVariable& v) : ref(&v) {}
+    ReferenceType(ScriptVariable* v) : ref(v) {}
+    
+};
+
 class Interpreter;
 // storage class to temporarily store states of the interpreter
 struct InterpreterState {
