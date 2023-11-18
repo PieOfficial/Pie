@@ -113,10 +113,13 @@ int main(int argc, char *argv[]) {
         .implicit_value(true);
         //.nargs(1);
 
-    program.add_argument("--download")
+    program.add_argument("-d", "--download")
+        .action([&](const std::string &value)
+        {
+            std::cout << value << std::endl;
+        })
         .default_value(std::string("none"))
-        .help("Downloads a repo (repository) in the root dir")
-        .implicit_value(true);
+        .help("Downloads a repo (repository) in the root dir");
 
     try {
         program.parse_args(argc, argv);
@@ -129,14 +132,6 @@ int main(int argc, char *argv[]) {
 
     if (program["--build"] == true) {
         read_pieScript("build.pie"); //program.get<std::string>("--build")
-    }
-    if (program["--download"] == true) {
-        auto input = program.get<std::string>("--download");
-        std::cerr << input << std::endl;
-        //     std::string error;
-        // std::string repo = input;
-        // repo = to_lowercase(repo);
-        // error = download_repo(repo);
     }
 
     return 0;
