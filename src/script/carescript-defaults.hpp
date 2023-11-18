@@ -507,7 +507,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         ScriptVariable* var = get_value<ReferenceType>(args[0]);
         *var = args[1];
         return script_null;
-    }}}
+    }}},
     // TODO: implement function that deletes a variable
 };
 

@@ -1,0 +1,31 @@
+
+@const[
+    the_answer = 12
+]
+
+@add[x,y]
+    return($x + $y)
+
+@mul[x,y]
+    if($y is 1 or $y is 0)
+        return($x)
+    endif()
+    if($y is 0)
+        return(0)
+    endif()
+
+    return(call(mul,$x,$y - 1) + $x)
+
+# this is a comment
+@main[]
+    set(hi,["hello", "yay4", "abc def"]) 
+    echoln($hi)
+    set(hi,push($hi, "yay", "c"))
+    echoln($hi)
+    echoln(pop($hi, 1))
+    echoln($hi)
+    echoln(exists(FILE, "testfile.txt"))
+    echoln(call(add,8,8))
+    echoln(call(mul,8,8))
+    echoln("Hello, World!")
+    beep(880,100)
