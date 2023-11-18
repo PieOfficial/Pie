@@ -20,7 +20,7 @@
 // #include <sys/wait.h>
 #include <sys/types.h>
 
-#include "argparse.hpp"
+#include "../include/argparse.hpp"
 
 #include "script/carescript-api.hpp"
 #include "core/console/colored_cout.h"

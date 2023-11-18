@@ -1,2 +1,2 @@
-cmake -G "MSYS Makefiles" -B "output"
+cmake -G "MinGW Makefiles" -B "./build"
 pause
