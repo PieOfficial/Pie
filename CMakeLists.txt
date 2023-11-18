@@ -18,6 +18,20 @@ set(SOURCE
 # set(LIBRARY_DIRS
 #     lib
 # )
+#set(CURL_LIBRARY_DIRS "C:/Users/Dragon boy/Desktop/UnSorted/PieNew/curl/lib")
+#set(CURL_INCLUDE_DIRS "C:/Users/Dragon boy/Desktop/UnSorted/PieNew/curl/include")
+
+
+
+# find_package(CURL QUIET)
+# if(CURL_FOUND)
+#     set(INCLUDE_DIRS ${CURL_INCLUDE_DIRS})
+#     target_link_libraries(pie ${CURL_LIBRARIES})
+# else()
+#     message(FATAL_ERROR "Failed to find libcurl")
+# endif()
 
 add_executable(pie ${SOURCE})
+#target_link_libraries(pie libcurl)
+# Add the curl library to the target's link libraries
 #target_link_libraries(pie libcurl)
