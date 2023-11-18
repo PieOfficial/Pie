@@ -21,7 +21,7 @@
 #include <sys/types.h>
 #include "../include/curl/curl/curl.h"
 
-
+#include "../include/argparse.hpp"
 
 #include "script/carescript-api.hpp"
 #include "core/console/colored_cout.h"
@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
     }
     if (program["--download"] == true) {
         auto input = program.get<std::string>("--download");
-        
+        std::cerr << input << program;
         //     std::string error;
         // std::string repo = input;
         // repo = to_lowercase(repo);
