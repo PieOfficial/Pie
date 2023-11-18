@@ -116,7 +116,6 @@ int main(int argc, char *argv[]) {
     program.add_argument("--download")
         .default_value(std::string("none"))
         .help("Downloads a repo (repository) in the root dir")
-        .default_value(false)
         .implicit_value(true);
 
     try {
@@ -133,7 +132,7 @@ int main(int argc, char *argv[]) {
     }
     if (program["--download"] == true) {
         auto input = program.get<std::string>("--download");
-        std::cerr << input << program;
+        std::cerr << input << std::endl;
         //     std::string error;
         // std::string repo = input;
         // repo = to_lowercase(repo);
