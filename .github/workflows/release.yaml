@@ -4,9 +4,13 @@ on:
   push:
     tags:
       - 'v*'
-  
+
+
 jobs: 
    build:
+    strategy:
+      matrix:
+        compiler: [gcc, g++]
     name: Release
     runs-on: windows-latest
     permissions: write-all
@@ -16,7 +20,7 @@ jobs:
         version: "^1.0.0"
         token: ${{ SECRETS.GITHUB_TOKEN }}
      - name: cmake
-       run: cmake -G "MinGW Makefiles" -B "./build"
+       run: cmake -G "MinGW Makefiles" -B "./build" 
      - name: make
        run: |
         cd ./build
