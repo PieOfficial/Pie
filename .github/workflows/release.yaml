@@ -15,13 +15,17 @@ jobs:
        with:
         version: "^1.0.0"
         token: ${{ SECRETS.GITHUB_TOKEN }}
+     - name: cmake
+       run: Build.bat
      - name: make
-       run: make -j3
+       run: |
+        cd ./build
+        make
      - name: Get version
        id: get_version
        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
      - name: ziping
-       run: powershell Compress-Archive ./output ./output.zip
+       run: powershell Compress-Archive ./build ./output.zip
      - name: Release
        uses: softprops/action-gh-release@v1
        with:
