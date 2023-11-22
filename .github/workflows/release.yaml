@@ -16,7 +16,7 @@ jobs:
         version: "^1.0.0"
         token: ${{ SECRETS.GITHUB_TOKEN }}
      - name: cmake
-       run: Build.bat
+       run: cmake -G "MinGW Makefiles" -B "./build"
      - name: make
        run: |
         cd ./build
