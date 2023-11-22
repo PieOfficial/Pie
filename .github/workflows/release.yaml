@@ -10,7 +10,16 @@ jobs:
    build:
     strategy:
       matrix:
-        compiler: [gcc, g++]
+        os: [windows-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+          - os: windows-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+        exclude:
+          - os: windows-latest
+            c_compiler: clang
     name: Release
     runs-on: windows-latest
     permissions: write-all
@@ -20,7 +29,7 @@ jobs:
         version: "^1.0.0"
         token: ${{ SECRETS.GITHUB_TOKEN }}
      - name: cmake
-       run: cmake -G "MinGW Makefiles" -B "./build" 
+       run: cmake -G "MinGW Makefiles" -B "./build" -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
      - name: make
        run: |
         cd ./build
