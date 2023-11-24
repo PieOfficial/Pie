@@ -3,10 +3,9 @@
 
 #include <iostream>
 #include <string>
-#include "../../../include/curl/curl/curl.h"
 
-namespace Network {
-
+class Network {
+public:
 /**
  * Callback function used by the libcurl library to write data into a string buffer.
  *
@@ -17,7 +16,7 @@ namespace Network {
  *
  * @return The total number of bytes written into the buffer.
  */
-static size_t WriteCallback(void *buffer, size_t size, size_t nmemb, void *userp);
+std::size_t WriteCallback(void *buffer, std::size_t size, std::size_t nmemb, void *userp);
 
 /**
  * Retrieves the contents of the specified URL using a GET request.
@@ -28,8 +27,8 @@ static size_t WriteCallback(void *buffer, size_t size, size_t nmemb, void *userp
  *
  * @throws std::string an error message if the request fails
  */
-std::string get(std::string url);
+std::string get(const std::string& url);
 
-} // namespace Network
+};
 
-#endif // NETWORK_HPP
+#endif

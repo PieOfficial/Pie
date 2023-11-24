@@ -7,8 +7,10 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -g")
 
+
 set(SOURCE
     src/main.cpp
+    src/core/Network/network.cpp
 )
 
 # set(INCLUDE_DIRS
@@ -32,6 +34,15 @@ set(SOURCE
 # endif()
 
 add_executable(pie ${SOURCE})
+
+
+# find_package (CURL)
+# if (CURL_FOUND)
+# 	include_directories(${CURL_INCLUDE_DIRS})
+# 	target_link_libraries(pie ${CURL_LIBRARIES})
+# else()
+# 	MESSAGE(FATAL_ERROR "LibCurl is not found in your system.")
+# endif (CURL_FOUND)
 #target_link_libraries(pie libcurl)
 # Add the curl library to the target's link libraries
-#target_link_libraries(pie libcurl)
+#target_link_libraries(pie lib/libcurl.a)

@@ -19,7 +19,7 @@
 
 // #include <sys/wait.h>
 #include <sys/types.h>
-#include "../include/curl/curl/curl.h"
+
 
 #include "../include/argparse.hpp"
 
@@ -117,6 +117,8 @@ int main(int argc, char *argv[]) {
         .action([&](const std::string &value)
         {
             std::cout << value << std::endl;
+            Network net;
+            std::cout << net.get(value) << std::endl;
         })
         .default_value(std::string("none"))
         .help("Downloads a repo (repository) in the root dir");
