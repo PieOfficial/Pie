@@ -18,7 +18,7 @@
 #include <string>
 
 #ifdef _nana_std_put_time
-	#include <nana/stdc++.hpp>
+	#include <bits/stdc++.h>
 #else
 	#include <iomanip>
 #endif

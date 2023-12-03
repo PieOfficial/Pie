@@ -17,7 +17,7 @@
 #include <nana/push_ignore_diagnostic>
 
 #include <nana/config.hpp>
-#include <nana/stdc++.hpp>
+#include <bits/stdc++.h>
 
 #include <nana/charset.hpp>
 
