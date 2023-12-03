@@ -93,7 +93,9 @@
     "cinttypes": "cpp",
     "ranges": "cpp",
     "span": "cpp",
-    "numbers": "cpp"
+    "numbers": "cpp",
+    "csetjmp": "cpp",
+    "semaphore": "cpp"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

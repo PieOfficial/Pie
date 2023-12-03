@@ -5,13 +5,17 @@ project(pie VERSION 1.0.0)
 set(CMAKE_GENERATOR "MSYS Makefiles" CACHE INTERNAL "" FORCE)
 set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -g")
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -g") # -fno-merge-constants -stdlib=libstdc++
 
 
 set(SOURCE
     src/main.cpp
     src/core/gui/gui.cpp
 )
+
+add_subdirectory(./nana ./cmake-nana-build-${CONFIG} )
 
 # set(INCLUDE_DIRS
 #     include
@@ -35,7 +39,8 @@ set(SOURCE
 
 add_executable(pie ${SOURCE})
 
-
+target_link_libraries(pie PRIVATE nana)
+target_compile_features(pie PRIVATE cxx_std_17)
 # find_package (CURL)
 # if (CURL_FOUND)
 # 	include_directories(${CURL_INCLUDE_DIRS})

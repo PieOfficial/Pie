@@ -26,6 +26,7 @@
 #include "script/carescript-api.hpp"
 #include "core/console/colored_cout.h"
 //#include "core/Network/network.hpp"
+#include "core/gui/gui.hpp"
 
 using namespace std;
 using namespace chrono;
@@ -124,12 +125,8 @@ int main(int argc, char *argv[]) {
         .help("Downloads a repo (repository) in the root dir");
 
     program.add_argument("-ui", "--gui")
-        .action([&](const std::string &value)
-        {
-            std::cout << value << std::endl;
-
-        })
-        .default_value(std::string("none"))
+        .default_value(false)
+        .implicit_value(true)
         .help("starts gui");
 
     try {
@@ -143,6 +140,10 @@ int main(int argc, char *argv[]) {
 
     if (program["--build"] == true) {
         read_pieScript("build.pie"); //program.get<std::string>("--build")
+    }
+    if (program["--gui"] == true) {
+        Gui gui;
+        gui.start();
     }
 
     return 0;
