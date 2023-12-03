@@ -25,7 +25,7 @@
 
 #include "script/carescript-api.hpp"
 #include "core/console/colored_cout.h"
-#include "core/Network/network.hpp"
+//#include "core/Network/network.hpp"
 
 using namespace std;
 using namespace chrono;
@@ -117,11 +117,20 @@ int main(int argc, char *argv[]) {
         .action([&](const std::string &value)
         {
             std::cout << value << std::endl;
-            Network net;
-            std::cout << net.get(value) << std::endl;
+            //Network net;
+            //std::cout << net.get(value) << std::endl;
         })
         .default_value(std::string("none"))
         .help("Downloads a repo (repository) in the root dir");
+
+    program.add_argument("-ui", "--gui")
+        .action([&](const std::string &value)
+        {
+            std::cout << value << std::endl;
+
+        })
+        .default_value(std::string("none"))
+        .help("starts gui");
 
     try {
         program.parse_args(argc, argv);
