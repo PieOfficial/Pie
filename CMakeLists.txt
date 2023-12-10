@@ -10,7 +10,6 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -g")
 
 set(SOURCE
     src/main.cpp
-    src/core/Network/network.cpp
 )
 
 # set(INCLUDE_DIRS
