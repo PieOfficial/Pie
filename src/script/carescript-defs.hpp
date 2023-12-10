@@ -59,7 +59,7 @@ struct ScriptVariable {
         return value.get()->to_printable();
     }
     inline std::string string() const noexcept {
-        return value.get()->to_string();
+        return value->to_string();
     }
 
     template<typename Tp>

@@ -4,7 +4,7 @@
 #include "carescript-defs.hpp"
 #include "carescript-defaults.hpp"
 
-#include <string.h>
+#include <cstring>
 #include <filesystem>
 #include <variant>
 

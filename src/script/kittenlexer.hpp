@@ -106,7 +106,7 @@ public:
 
     inline KittenLexer& add_capsule(char open, char close) {
         if(!is_capsule(open,close))
-            capsules.push_back(std::make_tuple(open, close));
+            capsules.emplace_back(std::make_tuple(open, close));
         return *this;
     }
     inline KittenLexer& add_stringq(char c) {
