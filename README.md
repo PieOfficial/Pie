@@ -17,6 +17,7 @@ Pie is written in C and C++, it's designed to be easy to use, extensible, and fa
 Pie can only be built and run on Windows at the moment.
 For compiling from source, the dependencies are:
 - make
+- cmake
 - GNU G++ (>= 11.2.0)
 
 Follow these steps to compile:

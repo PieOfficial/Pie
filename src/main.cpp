@@ -9,6 +9,11 @@
 #include <chrono>
 
 
+#include <lua.hpp>
+#include <lauxlib.h>
+#include <lualib.h>
+
+
 #ifdef _WIN32
 #include <windows.h>
 //#include "unistd.h"
@@ -122,6 +127,26 @@ int main(int argc, char *argv[]) {
         })
         .default_value(std::string("none"))
         .help("Downloads a repo (repository) in the root dir");
+
+    program.add_argument("-l", "--lua")
+        .action([&](const std::string &value)
+        {
+            lua_State* L = luaL_newstate();
+            luaL_openlibs(L);  // Load standard Lua libraries
+            luaL_loadstring(L, "print('Hello from Lua!')");
+            int result = lua_pcall(L, 0, LUA_MULTRET, 0);
+            if (result == LUA_OK) {
+                lua_getglobal(L, "print");  // Get the Lua 'print' function
+                lua_pushstring(L, "Hello from Lua!");
+                lua_call(L, 1, 0);  // Call the 'print' function
+            } else {
+                std::cerr << "Lua error: " << lua_tostring(L, -1) << std::endl;
+            }
+
+            lua_close(L);
+        })
+        .default_value(std::string("none"))
+        .help("");
 
     try {
         program.parse_args(argc, argv);

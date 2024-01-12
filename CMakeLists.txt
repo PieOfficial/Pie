@@ -12,36 +12,13 @@ set(SOURCE
     src/main.cpp
 )
 
-# set(INCLUDE_DIRS
-#     include
-# )
-# set(CMAKE_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/include)
-# set(LIBRARY_DIRS
-#     lib
-# )
-#set(CURL_LIBRARY_DIRS "C:/Users/Dragon boy/Desktop/UnSorted/PieNew/curl/lib")
-#set(CURL_INCLUDE_DIRS "C:/Users/Dragon boy/Desktop/UnSorted/PieNew/curl/include")
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/liblua54.a DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/lua54.dll DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-
-
-# find_package(CURL QUIET)
-# if(CURL_FOUND)
-#     set(INCLUDE_DIRS ${CURL_INCLUDE_DIRS})
-#     target_link_libraries(pie ${CURL_LIBRARIES})
-# else()
-#     message(FATAL_ERROR "Failed to find libcurl")
-# endif()
+# Add the include directory for the Lua header files
+include_directories(include)
 
 add_executable(pie ${SOURCE})
 
-
-# find_package (CURL)
-# if (CURL_FOUND)
-# 	include_directories(${CURL_INCLUDE_DIRS})
-# 	target_link_libraries(pie ${CURL_LIBRARIES})
-# else()
-# 	MESSAGE(FATAL_ERROR "LibCurl is not found in your system.")
-# endif (CURL_FOUND)
-#target_link_libraries(pie libcurl)
-# Add the curl library to the target's link libraries
-#target_link_libraries(pie lib/libcurl.a)
+# Link against the Lua library
+target_link_libraries(pie "${CMAKE_CURRENT_SOURCE_DIR}/liblua54.a" "${CMAKE_CURRENT_SOURCE_DIR}/lua54.dll")
