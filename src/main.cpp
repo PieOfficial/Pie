@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
             lua_close(L);
         })
         .default_value(std::string("none"))
-        .help("");
+        .help("lua");
 
     try {
         program.parse_args(argc, argv);

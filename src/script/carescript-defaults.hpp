@@ -5,6 +5,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <lua.hpp>
 #endif
 
 /*
@@ -506,6 +507,52 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         cc_builtin_var_requires(args[0],ReferenceType);
         ScriptVariable* var = get_value<ReferenceType>(args[0]);
         *var = args[1];
+        return script_null;
+    }}},
+    {"call_lua_script",{1,[](const ScriptArglist& args,ScriptSettings& settings) -> ScriptVariable {
+        cc_builtin_if_ignore();
+        cc_builtin_var_requires(args[0], ScriptStringValue);
+        const char* script_name = get_value<ScriptStringValue>(args[0]).c_str();
+        // 1. Create a Lua state
+        lua_State* L = luaL_newstate();
+
+        // 2. Open standard Lua libraries
+        luaL_openlibs(L);
+
+        // 3. Load the Lua script
+        if (luaL_loadfile(L, script_name) != LUA_OK) {
+            _cc_error(std::string("Error loading script: ") + lua_tostring(L, -1));
+            return 1;
+        }
+
+        // 4. Execute the script
+        if (lua_pcall(L, 0, LUA_MULTRET, 0) != LUA_OK) {
+            std::cerr << "Error running script: " << lua_tostring(L, -1) << std::endl;
+            return 1;
+        }
+
+        // 5. Get the output from the script
+        int numResults = lua_gettop(L);  // Get the number of results on the stack
+
+        if (numResults > 0) {
+            std::cout << "Script output:" << std::endl;
+            for (int i = 1; i <= numResults; ++i) {
+                // Check the type of each result and print it accordingly
+                if (lua_isstring(L, i)) {
+                    std::cout << lua_tostring(L, i) << std::endl;
+                    return new ScriptStringValue(lua_tostring(L, i));
+                } else if (lua_isnumber(L, i)) {
+                    std::cout << lua_tonumber(L, i) << std::endl;
+                } else {
+                    // Handle other types as needed
+                    std::cout << "Unknown result type" << std::endl;
+                }
+            }
+        }
+
+        // 6. Close the Lua state
+        lua_close(L);
+
         return script_null;
     }}},
     // TODO: implement function that deletes a variable
