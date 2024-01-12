@@ -62,7 +62,7 @@ struct ScriptNumberValue : public ScriptValue {
 // default string type implementation
 struct ScriptStringValue : public ScriptValue {
     const std::string get_type() const noexcept override { return "String"; }
-    std::string string = "";
+    std::string string;
     
     bool operator==(const ScriptValue* val) const noexcept override {
         return val->get_type() == get_type() && ((ScriptStringValue*)val)->string == string;
@@ -88,7 +88,7 @@ struct ScriptStringValue : public ScriptValue {
 // default name type implementation
 struct ScriptNameValue : public ScriptValue {
     const std::string get_type() const noexcept override { return "Name"; }
-    std::string name = "";
+    std::string name;
     
     bool operator==(const ScriptValue* val) const noexcept override {
         return val->get_type() == get_type() && ((ScriptNameValue*)val)->name == name;
