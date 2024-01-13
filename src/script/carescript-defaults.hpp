@@ -339,7 +339,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
 
         if(get_value<ScriptNameValue>(args[0]) == "ERASE") {
             if(args.size() != 3) _cc_error("requires 3 arguments");
-            cc_builtin_var_requires(args[2],ScriptNumberValue);
+            cc_builtin_var_requires(args[2], ScriptNumberValue);
             auto idx = get_value<ScriptNumberValue>(args[2]);
             if(str.empty()) _cc_error("string empty");
             if(idx >= str.size()) _cc_error("index overflow");
@@ -350,8 +350,8 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         }
         else if(get_value<ScriptNameValue>(args[0]) == "INSERT") {
             if(args.size() != 4) _cc_error("requires 4 arguments");
-            cc_builtin_var_requires(args[2],ScriptNumberValue);
-            cc_builtin_var_requires(args[3],ScriptStringValue);
+            cc_builtin_var_requires(args[2], ScriptNumberValue);
+            cc_builtin_var_requires(args[3], ScriptStringValue);
             auto idx = get_value<ScriptNumberValue>(args[2]);
             if(str.empty()) _cc_error("string empty");
             if(idx >= str.size()) _cc_error("index overflow");
@@ -362,8 +362,8 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         }
         else if(get_value<ScriptNameValue>(args[0]) == "PUT") {
             if(args.size() != 4) _cc_error("requires 4 arguments");
-            cc_builtin_var_requires(args[2],ScriptNumberValue);
-            cc_builtin_var_requires(args[3],ScriptStringValue);
+            cc_builtin_var_requires(args[2], ScriptNumberValue);
+            cc_builtin_var_requires(args[3], ScriptStringValue);
             auto idx = get_value<ScriptNumberValue>(args[2]);
             if(str.empty()) _cc_error("string empty");
             if(idx >= str.size()) _cc_error("index overflow");
@@ -385,7 +385,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         }
         else if(get_value<ScriptNameValue>(args[0]) == "AT") {
             if(args.size() != 3) _cc_error("requires 3 arguments");
-            cc_builtin_var_requires(args[2],ScriptNumberValue);
+            cc_builtin_var_requires(args[2], ScriptNumberValue);
             if(str.empty()) _cc_error("string empty");
             auto idx = get_value<ScriptNumberValue>(args[2]);
             if(idx >= str.size()) _cc_error("index overflow");
@@ -395,8 +395,8 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         }
         else if(get_value<ScriptNameValue>(args[0]) == "SUBSTR") {
             if(args.size() != 4) _cc_error("requires 4 arguments");
-            cc_builtin_var_requires(args[2],ScriptNumberValue);
-            cc_builtin_var_requires(args[3],ScriptNumberValue);
+            cc_builtin_var_requires(args[2], ScriptNumberValue);
+            cc_builtin_var_requires(args[3], ScriptNumberValue);
             if(str.empty()) _cc_error("string empty");
             auto idx_from = get_value<ScriptNumberValue>(args[2]);
             auto idx_to = get_value<ScriptNumberValue>(args[3]);
@@ -417,7 +417,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
 
     {"bake",{1,[](const ScriptArglist& args, ScriptSettings& settings) -> ScriptVariable {
         cc_builtin_if_ignore();
-        cc_builtin_var_requires(args[0],ScriptStringValue);
+        cc_builtin_var_requires(args[0], ScriptStringValue);
         return bake_extension(get_value<ScriptStringValue>(args[0]),settings) ? script_true : script_false;
     }}},
     {"typeof",{1,[](const ScriptArglist& args, ScriptSettings& settings) -> ScriptVariable {
@@ -466,8 +466,8 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
     {"push",{-1,[](const ScriptArglist& args,ScriptSettings& settings) -> ScriptVariable {
         cc_builtin_if_ignore();
         // Note how we can already use "ListType" here as any other type
-        cc_builtin_var_requires(args[0],ListType);
-        cc_builtin_arg_min(args,2);
+        cc_builtin_var_requires(args[0], ListType);
+        cc_builtin_arg_min(args, 2);
         ListType list = get_value<ListType>(args[0]);
         for(size_t i = 1; i < args.size(); ++i) {
             list.list.push_back(args[i]);
@@ -509,7 +509,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
     }}},
     {"setref",{2,[](const ScriptArglist& args,ScriptSettings& settings) -> ScriptVariable {
         cc_builtin_if_ignore();
-        cc_builtin_var_requires(args[0],ReferenceType);
+        cc_builtin_var_requires(args[0], ReferenceType);
         ScriptVariable* var = get_value<ReferenceType>(args[0]);
         *var = args[1];
         return script_null;
@@ -519,7 +519,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         cc_builtin_var_requires(args[0], ScriptStringValue);
         const char* script_name = get_value<ScriptStringValue>(args[0]).c_str();
         lua_State* L = LuaManager::getInstance().getState();
-        // 3. Load the Lua script
+        // Load the Lua script
         if (luaL_loadfile(L, script_name) != LUA_OK) {
             _cc_error(std::string("Error loading script: ") + lua_tostring(L, -1));
             return 1;
@@ -604,7 +604,7 @@ inline std::vector<ScriptTypeCheck> default_script_typechecks = {
         auto lex1 = lx.lex(src.src);
         if(lex1.size() != 1) return nullptr;
         lex1[0].src.erase(lex1[0].src.begin());
-        lex1[0].src.erase(lex1[0].src.end()-1);
+        lex1[0].src.erase(lex1[0].src.end() - 1);
 
         auto plist = lx.lex(lex1[0].src);
         ListType list;
@@ -704,38 +704,38 @@ inline std::map<std::string,std::vector<ScriptOperator>> default_script_operator
             );
     }}}},
     {"and",{{3,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
-        cc_operator_same_type(right,left,"and");
-        cc_operator_var_requires(right,"and",ScriptNumberValue);
+        cc_operator_same_type(right, left, "and");
+        cc_operator_var_requires(right, "and", ScriptNumberValue);
         
         return new ScriptNumberValue(
                 (get_value<ScriptNumberValue>(left) == true && get_value<ScriptNumberValue>(right)) ? true : false
             );
     }}}},
     {"or",{{4,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
-        cc_operator_same_type(right,left,"or");
-        cc_operator_var_requires(right,"or",ScriptNumberValue);
+        cc_operator_same_type(right, left, "or");
+        cc_operator_var_requires(right, "or", ScriptNumberValue);
                 
         return new ScriptNumberValue(
                 (get_value<ScriptNumberValue>(left) == true || get_value<ScriptNumberValue>(right) == true) ? true : false
             );
     }}}},
     {"more",{{5,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
-        cc_operator_same_type(right,left,"more");
-        cc_operator_var_requires(right,"more",ScriptNumberValue);
+        cc_operator_same_type(right, left, "more");
+        cc_operator_var_requires(right, "more", ScriptNumberValue);
         return new ScriptNumberValue(
                 (get_value<ScriptNumberValue>(left) > get_value<ScriptNumberValue>(right)) ? true : false
             );
     }}}},
     {"less",{{5,ScriptOperator::BINARY,[](const ScriptVariable& left, const ScriptVariable& right, ScriptSettings& settings)->ScriptVariable {
-        cc_operator_same_type(right,left,"less");
-        cc_operator_var_requires(right,"less",ScriptNumberValue);
+        cc_operator_same_type(right, left, "less");
+        cc_operator_var_requires(right, "less", ScriptNumberValue);
         return new ScriptNumberValue(
                 (get_value<ScriptNumberValue>(left) < get_value<ScriptNumberValue>(right)) ? true : false
             );
     }}}},
     
     {"not",{{-4,ScriptOperator::UNARY,[](const ScriptVariable& left, const ScriptVariable&, ScriptSettings& settings)->ScriptVariable {
-        cc_operator_var_requires(left,"not",ScriptNumberValue);
+        cc_operator_var_requires(left, "not", ScriptNumberValue);
         return new ScriptNumberValue(
                 !get_value<ScriptNumberValue>(left)
             );

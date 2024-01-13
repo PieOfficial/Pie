@@ -193,7 +193,7 @@ public:
             }
 
             // Check for characters to be ignored
-            if(stringqs.empty() && opens.empty() && (is_ignore(src[i]) || is_newline(src[i]) || match_con_any(con_newlines, src[i]) || match_con_any(con_ignores,src[i]))) {
+            if(stringqs.empty() && opens.empty() && (is_ignore(src[i]) || is_newline(src[i]) || match_con_any(con_newlines, src[i]) || match_con_any(con_ignores, src[i]))) {
                 if(is_newline(src[i]) || match_con_any(con_newlines, src[i])) suntil_newline = false;
                 if((is_ignore(src[i]) || match_con_any(con_ignores, src[i])) && suntil_newline) continue; 
                 if(token.src != "" || !erase_emptys) {

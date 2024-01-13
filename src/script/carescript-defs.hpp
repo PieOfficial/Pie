@@ -27,6 +27,13 @@ concept ScriptValueType = std::is_base_of<carescript::ScriptValue, Tp>::value;
 struct ScriptVariable {
     std::unique_ptr<ScriptValue> value = nullptr;
 
+    /**
+     * Compares the ScriptVariable with another ScriptVariable for equality.
+     *
+     * @param sv The ScriptVariable to compare with.
+     *
+     * @return True if the ScriptVariables are equal, false otherwise.
+     */
     inline bool operator==(const ScriptVariable& sv) const noexcept {
         return *sv.value == *value;
     }
@@ -52,12 +59,31 @@ struct ScriptVariable {
         return *this;
     }
 
+    /**
+     * Returns the type of the value.
+     *
+     * @return the type of the value
+     */
     inline std::string get_type() const noexcept {
         return value.get()->get_type();
     }
+
+    /**
+     * Returns a string representation of the value in a printable format.
+     *
+     * @return A string representing the printable value.
+     *
+     * @throws None
+     */
     inline std::string printable() const noexcept{
         return value.get()->to_printable();
     }
+
+    /**
+     * Retrieves a string representation of the value.
+     *
+     * @return The string representation of the value.
+     */
     inline std::string string() const noexcept {
         return value->to_string();
     }
@@ -67,6 +93,12 @@ struct ScriptVariable {
         return get_value<Tp>(*this);
     }
 
+    /**
+     * Assigns the given `ScriptValue*` to the `ScriptVariable`, resetting the current value.
+     *
+     * @param var The `ScriptVariable` object to assign the value to.
+     * @param a The `ScriptValue*` to assign to the `ScriptVariable`.
+     */
     inline friend void from(ScriptVariable& var, ScriptValue* a) noexcept {
         var.value.reset(a);
     }
@@ -134,6 +166,11 @@ struct ScriptSettings {
     std::map<std::string, std::any> storage;
 
     ScriptSettings(Interpreter& i): interpreter(i) {}
+    /**
+     * Clears all the variables, constants, and labels.
+     *
+     * @throws None
+     */
     inline void clear() noexcept {
         line = 0;
         exit = false;
@@ -240,6 +277,8 @@ struct LexerCollection {
         .add_backslashopt('\\','\\')
         .add_backslashopt('"','\"')
         .erase_empty();
+
+    // Define the lexer for preprocessing
     KittenLexer preprocess = KittenLexer()
         .add_stringq('"')
         .add_capsule('(',')')
@@ -252,6 +291,15 @@ struct LexerCollection {
         .ignore_backslash_opts()
         .erase_empty();
     
+    /**
+     * Clears the argument list, expression, and preprocess by creating a new instance of KittenLexer.
+     *
+     * @param none
+     *
+     * @return none
+     *
+     * @throws none
+     */
     void clear() {
         argumentlist = expression = preprocess = KittenLexer();
     }
@@ -270,6 +318,15 @@ struct ListType : public ScriptValue {
     val_t get_value() const noexcept { return list; }
     val_t& get_value() noexcept { return list; }
     const std::string get_type() const noexcept override { return "List"; }
+    /**
+     * Overrides the equality operator for the ScriptValue class.
+     *
+     * @param p The pointer to the ScriptValue to compare with.
+     *
+     * @return True if the ScriptValue is equal to the pointer, false otherwise.
+     *
+     * @throws None
+     */
     bool operator==(const ScriptValue* p) const noexcept override {
         return p->get_type() == get_type() && ((ListType*)p)->get_value() == get_value();
     };
@@ -284,6 +341,11 @@ struct ListType : public ScriptValue {
     std::string to_string() const noexcept override {
         return to_printable();
     }
+    /**
+     * Copy the ListType object.
+     *
+     * @return A pointer to a new ListType object.
+     */
     ScriptValue* copy() const noexcept override {
         return new ListType(list);
     }
@@ -334,6 +396,19 @@ struct InterpreterState {
 
     InterpreterState() {}
     InterpreterState(const Interpreter& interp) { save(interp); }
+    /**
+     * Constructor for the InterpreterState class.
+     *
+     * @param a a map of string to ScriptBuiltin
+     * @param b a map of string to vector of ScriptOperator
+     * @param c a vector of ScriptTypeCheck
+     * @param d an unordered map of string to string
+     * @param e an unordered map of string to ScriptRawBuiltin
+     * @param f an unordered map of string to ScriptPreProcess
+     * @param g a LexerCollection object
+     *
+     * @throws ErrorType a description of the error
+     */
     InterpreterState(
         const std::map<std::string, ScriptBuiltin>& a,
         const std::map<std::string, std::vector<ScriptOperator>>& b,
@@ -482,11 +557,18 @@ public:
 
     inline InterpreterError pre_process(std::string source) noexcept {
         settings.error_msg = "";
-        settings.labels = ::carescript::pre_process(source,settings);
+        settings.labels = ::carescript::pre_process(source, settings);
         error_check();
         return *this;
     }
 
+    /**
+     * Runs the function and returns the result.
+     *
+     * @return an InterpreterError object if there is an error, otherwise a modified InterpreterError object
+     *
+     * @throws None
+     */
     inline InterpreterError run() noexcept {
         settings.return_value = script_null;
         settings.line = 1;
@@ -502,6 +584,16 @@ public:
         std::vector<ScriptVariable> args = {targs...};
         return run(label, args);
     }
+    /**
+     * Runs the interpreter with the specified label and arguments.
+     *
+     * @param label the label to run
+     * @param args the arguments to pass to the label
+     *
+     * @return an InterpreterError object if an error occurred, otherwise returns the current interpreter
+     *
+     * @throws None
+     */
     inline InterpreterError run(std::string label, std::vector<ScriptVariable> args) noexcept {
         settings.return_value = script_null;
         settings.line = 1;
@@ -512,17 +604,26 @@ public:
         return is_null(settings.return_value) ? *this : InterpreterError(*this, settings.return_value);
     }
 
+    /**
+     * Evaluates the given source code and returns an InterpreterError if an error occurs.
+     *
+     * @param source the source code to evaluate
+     *
+     * @return an InterpreterError if an error occurs, or the current Interpreter instance if the evaluation is successful
+     *
+     * @throws None
+     */
     inline InterpreterError eval(std::string source) noexcept {
         settings.return_value = script_null;
-        settings.error_msg = run_script(source,settings);
+        settings.error_msg = run_script(source, settings);
         settings.exit = false;
         error_check();
-        return is_null(settings.return_value) ? *this : InterpreterError(*this,settings.return_value);
+        return is_null(settings.return_value) ? *this : InterpreterError(*this, settings.return_value);
     }
     inline InterpreterError expression(std::string source) {
-        auto ret = evaluate_expression(source,settings);
+        auto ret = evaluate_expression(source, settings);
         error_check();
-        return is_null(ret) ? *this : InterpreterError(*this,ret);
+        return is_null(ret) ? *this : InterpreterError(*this, ret);
     }
 
     inline int to_local_line(const int& line) const noexcept { return line - settings.labels.at(settings.label.top()).line; }
@@ -568,6 +669,15 @@ public:
     }
     inline InterpreterError bake(ExtensionData ext) noexcept;
 
+    /**
+     * Check if a given name is a built-in script.
+     *
+     * @param name the name to check
+     *
+     * @return true if the name is a built-in script, false otherwise
+     *
+     * @throws None
+     */
     inline bool has_builtin(const std::string& name) const noexcept {
         return script_builtins.find(name) != script_builtins.end();
     }
@@ -599,6 +709,15 @@ public:
         return script_preprocesses[name];
     }
 
+    /**
+     * Check if a variable with the given name exists in the settings.
+     *
+     * @param name The name of the variable to check.
+     *
+     * @return True if the variable exists, false otherwise.
+     *
+     * @throws None
+     */
     inline bool has_variable(const std::string& name) const noexcept {
         return settings.variables.find(name) != settings.variables.end();
     }
@@ -643,6 +762,13 @@ inline InterpreterError& InterpreterError::throw_error() {
     return *this;
 }
 
+/**
+ * Loads the state of the interpreter.
+ *
+ * @param interp the interpreter object to load the state into
+ *
+ * @throws None
+ */
 inline void InterpreterState::load(Interpreter& interp) const noexcept {
     interp.clear();
     interp.script_builtins = this->script_builtins;
@@ -653,6 +779,13 @@ inline void InterpreterState::load(Interpreter& interp) const noexcept {
     interp.script_rawbuiltins = this->script_rawbuiltins;
     interp.lexer = this->lexers;
 }
+/**
+ * Saves the state of the Interpreter by copying the contents of another Interpreter object.
+ *
+ * @param interp The Interpreter object to copy the state from.
+ *
+ * @throws None
+ */
 inline void InterpreterState::save(const Interpreter& interp) noexcept {
     script_builtins = interp.script_builtins;
     script_operators = interp.script_operators;
@@ -758,9 +891,19 @@ struct ExtensionData {
 
     ExtensionData(size_t h, Extension* ext): hash(h), extension(ext) {} 
 
+    /**
+     * Generates an ExtensionData object based on the given Extension pointer.
+     *
+     * @tparam T the type of the Extension pointer
+     * @param ext a pointer to an object that inherits from the Extension class
+     * 
+     * @return an ExtensionData object containing the hash code of the type and the Extension pointer
+     * 
+     * @throws None
+     */
     template<typename T> requires std::is_base_of_v<Extension,T>
     static inline ExtensionData make(T* ext) noexcept {
-        return ExtensionData(typeid(T).hash_code(),ext);
+        return ExtensionData(typeid(T).hash_code(), ext);
     }
 };
 
@@ -798,6 +941,12 @@ inline static void from(carescript::ScriptVariable& var, const Tp& integral) noe
     var = new carescript::ScriptNumberValue(integral);
 }
 
+/**
+ * Assigns a new `ScriptStringValue` to the given `ScriptVariable` using the provided string.
+ *
+ * @param var The `ScriptVariable` to be assigned.
+ * @param string The string value to be assigned to the `ScriptVariable`.
+ */
 inline static void from(carescript::ScriptVariable& var, const std::string& string) noexcept{
     var = new carescript::ScriptStringValue(string);
 }

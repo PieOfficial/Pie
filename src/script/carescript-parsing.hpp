@@ -26,10 +26,10 @@ inline static ExtensionData get_ext(std::filesystem::path name) noexcept {
     if(!name.has_extension()) name += ".so";
     if(name.is_relative())
         name = "./" + name.string();
-    void* handler = dlopen(name.c_str(),RTLD_NOW);
-    if(handler == nullptr) return {0,nullptr};
-    get_extension_fun f = (get_extension_fun)dlsym(handler,"get_extension");
-    if(f == nullptr) return {0,nullptr};
+    void* handler = dlopen(name.c_str(), RTLD_NOW);
+    if(handler == nullptr) return {0, nullptr};
+    get_extension_fun f = (get_extension_fun)dlsym(handler, "get_extension");
+    if(f == nullptr) return {0, nullptr};
     return f();
 }
 #endif
@@ -39,7 +39,7 @@ inline static bool bake_extension(ExtensionData ext, ScriptSettings& settings) n
 
     ext.extension->interp_link = &settings.interpreter;
     BuiltinList b_list = ext.extension->get_builtins();
-    settings.interpreter.script_builtins.insert(b_list.begin(),b_list.end());
+    settings.interpreter.script_builtins.insert(b_list.begin(), b_list.end());
     TypeList t_list = ext.extension->get_types();
     for(auto i : t_list) settings.interpreter.script_typechecks.push_back(i);
     OperatorList o_list = ext.extension->get_operators();
@@ -49,11 +49,11 @@ inline static bool bake_extension(ExtensionData ext, ScriptSettings& settings) n
         }
     }
     MacroList m_list = ext.extension->get_macros();
-    settings.interpreter.script_macros.insert(m_list.begin(),m_list.end());
+    settings.interpreter.script_macros.insert(m_list.begin(), m_list.end());
     PreProcList p_list = ext.extension->get_preprocesses();
-    settings.interpreter.script_preprocesses.insert(p_list.begin(),p_list.end());
+    settings.interpreter.script_preprocesses.insert(p_list.begin(), p_list.end());
     RawBuiltinList r_list = ext.extension->get_rawbuiltins();
-    settings.interpreter.script_rawbuiltins.insert(r_list.begin(),r_list.end());
+    settings.interpreter.script_rawbuiltins.insert(r_list.begin(), r_list.end());
 
     settings.interpreter.extensions.push_back(ext);
     ext.extension->poke_interpreter(settings.interpreter);
@@ -62,7 +62,7 @@ inline static bool bake_extension(ExtensionData ext, ScriptSettings& settings) n
 
 inline static bool bake_extension(const std::string& name, ScriptSettings& settings) noexcept {
     ExtensionData ext = get_ext(name);
-    return bake_extension(ext,settings);
+    return bake_extension(ext, settings);
 }
 
 inline static std::string run_script(const std::string& source, ScriptSettings& settings) noexcept {
@@ -76,6 +76,20 @@ inline static std::string run_script(const std::string& source, ScriptSettings& 
     return ret;
 }
 
+/**
+ * Runs a label in the script, given the label name, a map of labels, script settings, parent path, and arguments.
+ *
+ * @param label_name The name of the label to run.
+ * @param labels A map of labels.
+ * @param settings The script settings.
+ * @param parent_path The parent path.
+ * @param args The arguments to pass to the label.
+ *
+ * @return An empty string if the label does not exist or if it is invalid; 
+ *         otherwise, a string representing the result of the label execution.
+ *
+ * @throws None.
+ */
 inline static std::string run_label(const std::string& label_name, std::map<std::string, ScriptLabel> labels, ScriptSettings& settings, const std::filesystem::path& parent_path, const std::vector<ScriptVariable>& args) noexcept {
     if(labels.empty() || labels.count(label_name) == 0) return "";
     ScriptLabel label = labels[label_name];
@@ -111,7 +125,7 @@ inline static std::string run_label(const std::string& label_name, std::map<std:
             r.erase(r.begin());
             r.pop_back();
 
-            rawbuiltin(r,settings);
+            rawbuiltin(r, settings);
 
             if(settings.error_msg != "") {
                 settings.label.pop();
@@ -175,6 +189,15 @@ inline static bool is_name_char(char c) noexcept {
             c == '_';
 }
 
+/**
+ * Checks if the given string is a valid name.
+ *
+ * @param s the string to be checked
+ *
+ * @return `true` if the string is a valid name, `false` otherwise
+ *
+ * @throws none
+ */
 inline static bool is_name(const std::string& s) noexcept {
     if(s.empty()) return false;
     try { 
@@ -188,12 +211,25 @@ inline static bool is_name(const std::string& s) noexcept {
     return true;
 }
 
+/**
+ * Determines if the given string represents a label argument list.
+ *
+ * @param s The string to check.
+ *
+ * @return `true` if the string represents a label argument list, `false` otherwise.
+ *
+ * @throws None
+ */
 inline static bool is_label_arglist(std::string s) noexcept {
+    // Check if the size of the string is less than 2
     if(s.size() < 2) return false;
+
+    // Check if the string starts with '[' and ends with ']
     if(s[0] != '[' || s.back() != ']') return false;
     s.pop_back();
     s.erase(s.begin());
 
+    // Create a KittenLexer object to tokenize the string
     KittenLexer arglist_lexer = KittenLexer()
         .add_extract(',')
         .ignore_backslash_opts()
@@ -204,10 +240,12 @@ inline static bool is_label_arglist(std::string s) noexcept {
     bool found_n = true;
     for(auto i : lexed) {
         if(found_n) {
+            // Check if the token is a valid name
             if(!is_name(i.src)) return false;
             found_n = false;
         }
         else if(!found_n) {
+            // Check if the token is ','
             if(i.src != ",") return false;
             found_n = true;
         }
@@ -215,6 +253,15 @@ inline static bool is_label_arglist(std::string s) noexcept {
     return !found_n;
 }
 
+/**
+ * Parses the given string as a label argument list and returns a vector of strings.
+ *
+ * @param s The string to be parsed as a label argument list.
+ *
+ * @return A vector of strings representing the parsed label argument list.
+ *
+ * @throws None
+ */
 inline static std::vector<std::string> parse_label_arglist(std::string s) noexcept {
     if(!is_label_arglist(s)) return {};
     s.pop_back();
@@ -244,30 +291,54 @@ inline static std::vector<std::string> parse_label_arglist(std::string s) noexce
     return ret;
 }
 
+/**
+ * Parse the argument list from the given source string and return a vector of ScriptVariable.
+ *
+ * @param source the source string containing the argument list.
+ * @param settings the ScriptSettings object containing the interpreter settings.
+ *
+ * @return a vector of ScriptVariable representing the parsed arguments.
+ *
+ * @throws None
+ */
 inline std::vector<ScriptVariable> parse_argumentlist(std::string source, ScriptSettings& settings) noexcept {
+    // Remove the first and last characters (assuming they are parentheses)
     source.erase(source.begin());
     source.pop_back();
 
+    // Tokenize the source string using the lexer
     auto lexed = settings.interpreter.lexer.p_argumentlist(source);
+
+    // If no arguments were found, return an empty vector
     if(lexed.empty()) return std::vector<ScriptVariable>{};
+
+    // Initialize a vector to store the arguments
     std::vector<std::string> args(1);
+
+    // Iterate over the tokens and build the argument strings
     for(auto i : lexed) {
         if(!i.str && i.src == ",") {
+            // If the token is a comma, start a new argument string
             args.push_back({});
         }
         else {
             if(i.str) i.src = "\"" + i.src + "\"";
             else if(settings.interpreter.script_macros.count(i.src) != 0) i.src = settings.interpreter.script_macros.at(i.src);
 
+            // Append the token to the current argument string
             args.back() += " " + i.src;
         }
     }
 
+    // Evaluate each argument expression and store the results in a vector of ScriptVariable objects
     std::vector<ScriptVariable> ret;
     for(auto i : args) {
         ret.push_back(evaluate_expression(i, settings));
+
+        // If an error occurred during evaluation, return an empty vector
         if(settings.error_msg != "") return {};
     }
+
     return ret;
 }
 
@@ -295,15 +366,31 @@ struct _expressionFuncall {
     std::string function; 
     std::string arguments; 
 
+    /**
+     * Call the function and return the result.
+     *
+     * @param settings the script settings
+     * @param errors a reference to the expression errors
+     *
+     * @return the result of the function call
+     *
+     * @throws ErrorType if there is an error evaluating the function
+     */
     inline ScriptVariable call(ScriptSettings& settings, _expressionErrors& errors) noexcept {
         if(settings.interpreter.has_builtin(function)) {
+            // Get the function arguments
             ScriptArglist args = parse_argumentlist(arguments, settings);
+
+            // Get the built-in function
             ScriptBuiltin fun = settings.interpreter.get_builtin(function);
+
             if(settings.error_msg != "") {
                 errors.push("error parsing argumentlist: " + settings.error_msg);
                 settings.error_msg = "";
                 return script_null;
             }
+
+            // Check if the number of arguments matches the expected count
             if(fun.arg_count >= 0) {
                 if((int)args.size() < fun.arg_count) {
                     errors.push("function call with too little arguments: " + function + arguments + 
@@ -316,12 +403,17 @@ struct _expressionFuncall {
                     return script_null;
                 }
             }
+
+            // Clear any previous error message
             settings.error_msg = "";
+
+            // Execute the built-in function with the arguments
             ScriptVariable ret =  fun.exec(args, settings);
             if(settings.error_msg != "") errors.push(settings.error_msg);
             return ret;
         }
         else {
+            // Get the raw built-in function
             ScriptRawBuiltin rawbuiltin = settings.interpreter.get_rawbuiltin(function);
             std::string argcpy = arguments.substr(1, arguments.size() - 2);
             auto ret = rawbuiltin(argcpy, settings);
@@ -347,7 +439,18 @@ struct _operatorToken {
     _operatorToken(std::string v): capsule(v) { type = CAPSULE; }
     _operatorToken() = delete;
 
+    /**
+     * Get the value of the script variable.
+     *
+     * @param settings the script settings
+     * @param errors the expression errors
+     *
+     * @return the value of the script variable
+     *
+     * @throws None
+     */
     inline ScriptVariable get_val(ScriptSettings& settings, _expressionErrors& errors) noexcept {
+        // Determine the type of the expression
         switch(type) {
             case VAL:
                 return val;
@@ -355,25 +458,45 @@ struct _operatorToken {
                 return call.call(settings, errors);
             case CAPSULE:
                 {
+                    // Extract the expression from the capsule
                     std::string capsule_copy = capsule;
                     capsule_copy.erase(capsule_copy.begin());
                     capsule_copy.pop_back();
+
+                    // Evaluate the extracted expression
                     ScriptVariable value = evaluate_expression(capsule_copy, settings);
+
+                    // If there was an error while evaluating the capsule, add it to the error list
                     if(settings.error_msg != "") {
                         errors.push("Error while parsing " + capsule + ": " + settings.error_msg);
                         settings.error_msg = "";
                         return script_null;
                     }
+
+                    // Return the evaluated value
                     return value;
                 }
             case OP:
             default:
                 break;
         }
+
+        // Return null if none of the cases matched
         return script_null;
     }
 };
 
+/**
+ * Prepares the tokens for expression evaluation.
+ *
+ * @param tokens the list of tokens to be prepared
+ * @param settings the script settings to be used
+ * @param errors the expression errors to be populated
+ *
+ * @return the vector of prepared operator tokens
+ *
+ * @throws ErrorType if function call is without argument list or if function call has invalid argument list
+ */
 inline static std::vector<_operatorToken> expression_prepare_tokens(lexed_kittens& tokens, ScriptSettings& settings, _expressionErrors& errors) noexcept {
     std::vector<_operatorToken> ret;
     for(size_t i = 0; i < tokens.size(); ++i) {
@@ -392,7 +515,7 @@ inline static std::vector<_operatorToken> expression_prepare_tokens(lexed_kitten
             }
             KittenToken arguments = tokens[i + 1];
             if(arguments.str || arguments.src.front() != '(') {
-                errors.push("function call with invalid argument list: " + tokens[i].src + " " +tokens[i+1].src);
+                errors.push("function call with invalid argument list: " + tokens[i].src + " " + tokens[i+1].src);
                 return {};
             }
 
@@ -420,7 +543,7 @@ inline static ScriptVariable expression_check_prec(std::vector<_operatorToken> m
     _operatorToken lhs = markedupTokens[state++];
         
     if(lhs.type == lhs.OP) {
-        lhs = lhs.op.op.run(expression_check_prec(markedupTokens, state, lhs.op.op.priority, settings, errors), script_null,settings);
+        lhs = lhs.op.op.run(expression_check_prec(markedupTokens, state, lhs.op.op.priority, settings, errors), script_null, settings);
         if(settings.error_msg != "") {
             errors.push(settings.error_msg); 
             settings.error_msg = "";
@@ -479,7 +602,7 @@ inline static ScriptVariable expression_force_parse(std::vector<_operatorToken> 
             errors.push("standalone operator detected!");
             return script_null;
         }
-        return markedupTokens[0].get_val(settings,errors);
+        return markedupTokens[0].get_val(settings, errors);
     }
     if(i >= (int)markedupTokens.size()) {
         int i = 0;
@@ -493,7 +616,7 @@ inline static ScriptVariable expression_force_parse(std::vector<_operatorToken> 
         ++i;
         if(i >= (int)markedupTokens.size()) {
             int i = 0;
-            return expression_check_prec(markedupTokens,i,max_prec,settings,errors); 
+            return expression_check_prec(markedupTokens, i, max_prec, settings, errors); 
         }
         markedupTokens[i].op.op.type = ScriptOperator::BINARY;
     }
@@ -532,6 +655,14 @@ inline static ScriptVariable evaluate_expression(const std::string& source, Scri
     return result;
 }
 
+/**
+ * Parses a given source string and populates the provided ScriptSettings object with constant values.
+ *
+ * @param source The source string to parse.
+ * @param settings The ScriptSettings object to populate with constant values.
+ *
+ * @throws None.
+ */
 inline static void parse_const_preprog(const std::string& source, ScriptSettings& settings) noexcept {
     std::vector<lexed_kittens> lines;
     KittenLexer lexer = KittenLexer()
@@ -568,7 +699,7 @@ inline static void parse_const_preprog(const std::string& source, ScriptSettings
             line += i[j].src + " ";
         }
         line.pop_back();
-        settings.constants[name] = evaluate_expression(line,settings);
+        settings.constants[name] = evaluate_expression(line, settings);
         if(settings.error_msg != "") {
             return;
         }
@@ -604,11 +735,11 @@ inline static std::map<std::string,ScriptLabel> pre_process(const std::string& s
         auto& line = lines[i];
         if(line.size() != 0 && line[0].src == "@" && !line[0].str) {
             if(line.size() != 3 && (line.size() > 1 && line[1].src != "pragma")) {
-                settings.error_msg = "line " + std::to_string(i+1) + ": invalid pre processor instruction: must have 2 arguments (got: " + std::to_string(line.size()-1) + ")";
+                settings.error_msg = "line " + std::to_string(i + 1) + ": invalid pre processor instruction: must have 2 arguments (got: " + std::to_string(line.size()-1) + ")";
                 return {};
             }
             if(!is_name(line[1].src) || line[1].str) {
-                settings.error_msg = "line " + std::to_string(i+1) + ": invalid pre processor instruction: expected instruction";
+                settings.error_msg = "line " + std::to_string(i + 1) + ": invalid pre processor instruction: expected instruction";
                 return {};
             }
             std::string inst = line[1].src;
@@ -616,22 +747,22 @@ inline static std::map<std::string,ScriptLabel> pre_process(const std::string& s
             if(inst == "const") {
                 auto body = line[2].src;
                 if(line[2].str) {
-                    settings.error_msg = "line " + std::to_string(i+1) + ": const: unexpected string";
+                    settings.error_msg = "line " + std::to_string(i + 1) + ": const: unexpected string";
                     return {};
                 }
                 if(body.size() < 2) {
-                    settings.error_msg = "line " + std::to_string(i+1) + ": const: unexpected token";
+                    settings.error_msg = "line " + std::to_string(i + 1) + ": const: unexpected token";
                     return {};
                 }
                 if(body.front() != '[' || body.back() != ']') {
-                    settings.error_msg = "line " + std::to_string(i+1) + ": const: expected body";
+                    settings.error_msg = "line " + std::to_string(i + 1) + ": const: expected body";
                     return {};
                 }
                 body.erase(body.begin());
                 body.erase(body.end() - 1);
-                parse_const_preprog(body,settings);
+                parse_const_preprog(body, settings);
                 if(settings.error_msg != "") {
-                    settings.error_msg = "line " + std::to_string(i+1) + ": const: line " + std::to_string(settings.line) + ": " + settings.error_msg;
+                    settings.error_msg = "line " + std::to_string(i + 1) + ": const: line " + std::to_string(settings.line) + ": " + settings.error_msg;
                     return {};
                 }
             }
@@ -664,14 +795,14 @@ inline static std::map<std::string,ScriptLabel> pre_process(const std::string& s
                         settings.error_msg = "line " + std::to_string(i + 1) + ": bake: expected value: " + b.src;
                         return {};
                     }
-                    if(!bake_extension(b.src,settings)) {
+                    if(!bake_extension(b.src, settings)) {
                         settings.error_msg = "line " + std::to_string(i + 1) + ": bake: error baking extension: " + b.src + "\n"; 
                         return {};
                     }
                 }
             }
             else if(inst == "pragma") {
-                line.erase(line.begin(),line.begin() + 2);
+                line.erase(line.begin(), line.begin() + 2);
                 if(line.size() == 0) {
                     settings.error_msg = "line " + std::to_string(i + 1) + ": pragma: no instruction";
                     return {};
@@ -682,7 +813,7 @@ inline static std::map<std::string,ScriptLabel> pre_process(const std::string& s
                 }
                 auto proc = settings.interpreter.script_preprocesses[line[0].src];
                 line.erase(line.begin());
-                proc(line,lines,i,settings);
+                proc(line, lines, i, settings);
                 if(settings.error_msg != "") {
                     settings.error_msg = "line " + std::to_string(i + 1) + ": pragma: " + settings.error_msg;
                     return {};

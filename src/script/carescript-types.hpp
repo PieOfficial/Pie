@@ -64,6 +64,16 @@ struct ScriptStringValue : public ScriptValue {
     const std::string get_type() const noexcept override { return "String"; }
     std::string string;
     
+    /**
+     * Checks if the given ScriptValue object is equal to this ScriptValue object.
+     *
+     * @param val The ScriptValue object to compare with.
+     *
+     * @return true if the given ScriptValue object is equal to this ScriptValue object,
+     *         false otherwise.
+     *
+     * @throws None
+     */
     bool operator==(const ScriptValue* val) const noexcept override {
         return val->get_type() == get_type() && ((ScriptStringValue*)val)->string == string;
     }
@@ -113,10 +123,24 @@ struct ScriptNameValue : public ScriptValue {
 struct ScriptNullValue : public ScriptValue {
     const std::string get_type() const noexcept override { return "Null"; }
     
+    /**
+     * Check if the given ScriptValue pointer is equal to this ScriptValue.
+     *
+     * @param val the ScriptValue pointer to compare with
+     *
+     * @return true if the given pointer has the same type as this ScriptValue, false otherwise
+     *
+     * @throws none
+     */
     bool operator==(const ScriptValue* val) const noexcept override {
         return val->get_type() == get_type();
     }
 
+    /**
+     * Converts the object to a printable string representation.
+     *
+     * @return the string "null"
+     */
     std::string to_printable() const noexcept override {
         return "null";
     }
