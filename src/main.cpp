@@ -109,7 +109,11 @@ void read_pieScript(std::string filename) {
     std::cout << "CPU time used: " << elapsed.count() << " ms\n";
 }
 
+
 int main(int argc, char *argv[]) {
+    // 1. Create a Lua state
+    //lua_State* L = luaL_newstate();
+
     argparse::ArgumentParser program("pie");
 
     program.add_argument("--build")

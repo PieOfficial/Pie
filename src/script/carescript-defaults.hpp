@@ -3,10 +3,14 @@
 
 #include "carescript-defs.hpp"
 
+
+
 #ifdef _WIN32
 #include <windows.h>
 #include <lua.hpp>
+
 #endif
+#include "LuaManager.h"
 
 /*
     Defines some default builtins, operators etc
@@ -14,6 +18,7 @@
 */
 
 namespace carescript {
+
 
 inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
     {"set",{2,[](const ScriptArglist& args, ScriptSettings& settings) -> ScriptVariable {
@@ -513,12 +518,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         cc_builtin_if_ignore();
         cc_builtin_var_requires(args[0], ScriptStringValue);
         const char* script_name = get_value<ScriptStringValue>(args[0]).c_str();
-        // 1. Create a Lua state
-        lua_State* L = luaL_newstate();
-
-        // 2. Open standard Lua libraries
-        luaL_openlibs(L);
-
+        lua_State* L = LuaManager::getInstance().getState();
         // 3. Load the Lua script
         if (luaL_loadfile(L, script_name) != LUA_OK) {
             _cc_error(std::string("Error loading script: ") + lua_tostring(L, -1));
@@ -551,7 +551,7 @@ inline std::map<std::string,ScriptBuiltin> default_script_builtins = {
         }
 
         // 6. Close the Lua state
-        lua_close(L);
+        //lua_close(L);
 
         return script_null;
     }}},

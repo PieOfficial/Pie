@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -g")
 
 set(SOURCE
     src/main.cpp
+    src/script/LuaManager.cpp
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/liblua54.a DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
