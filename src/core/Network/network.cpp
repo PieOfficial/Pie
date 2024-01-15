@@ -1,6 +1,8 @@
 #include "network.hpp"
 #include <stdio.h>
 
+namespace fs = std::filesystem;
+
 /**
  * Writes data to a file stream.
  *
@@ -13,18 +15,12 @@
  *
  * @throws None.
  */
-// size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
-//     std::ofstream *file = (std::ofstream *)stream;
-//     file->write((char *)ptr, size * nmemb);
-//     return size * nmemb;
-// }
-
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
- 
-{
-    size_t written = fwrite(ptr, size, nmemb, stream);
-    return written;
+size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
+    std::ofstream *file = (std::ofstream *)stream;
+    file->write((char *)ptr, size * nmemb);
+    return size * nmemb;
 }
+
 
 std::string Network::download_repo(const std::string& repo_url, const std::string& target_dir) {
     // Initialize libcurl
@@ -70,7 +66,11 @@ std::string Network::download_repo(const std::string& repo_url, const std::strin
         }
 
         // Move the downloaded file to the target directory
-        std::filesystem::rename("downloaded_file.zip", target_dir);
+        try {
+            std::filesystem::copy_file("downloaded_file.zip", target_dir + "/downloaded_file.zip");
+        } catch (std::filesystem::filesystem_error& err) {
+          std::cerr << "Error moving file: " << err.what() << std::endl;
+        }
         file_name = "downloaded_file.zip";
         curl_easy_cleanup(curl);
     }
