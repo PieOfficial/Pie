@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <filesystem> // For file system operations
 
 #include <curl/curl.h>
 
@@ -22,7 +23,7 @@ public:
  */
 std::string get(const std::string& url);
 
-std::string download_repo(const std::string& repo_url, const std::string& destination);
+std::string download_repo(const std::string& repo_url, const std::string& target_dir);
 
 };
 

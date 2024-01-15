@@ -30,7 +30,7 @@
 
 #include "script/carescript-api.hpp"
 #include "core/console/colored_cout.h"
-//#include "core/Network/network.hpp"
+#include "core/Network/network.hpp"
 
 using namespace std;
 using namespace chrono;
@@ -123,13 +123,15 @@ int main(int argc, char *argv[]) {
         //.nargs(1);
 
     program.add_argument("-d", "--download")
-        .action([&](const std::string &value)
-        {
-            std::cout << value << std::endl;
-            //Network net;
-            //std::cout << net.get(value) << std::endl;
-        })
-        .default_value(std::string("none"))
+        // .action([=](const std::string &repo_url, const std::string& target_dir)
+        // {
+        //     std::cout << repo_url << std::endl;
+        //     Network net;
+        //     net.download_repo(repo_url, target_dir);
+        // })
+        .nargs(2)
+        //.scan<'g', std::string>()
+        //.default_value(std::string("none"))
         .help("Downloads a repo (repository) in the root dir");
 
     program.add_argument("-l", "--lua")
@@ -160,7 +162,15 @@ int main(int argc, char *argv[]) {
         std::cerr << program;
         std::exit(1);
     }
-
+    if (program.is_used("--download")) {
+        auto files = program.get<std::vector<std::string>>("--download");
+        const std::string &repo_url = files[0];
+        const std::string &target_dir = files[1];
+        std::cout << repo_url << std::endl;
+        Network net;
+        net.download_repo(repo_url, target_dir);
+        //net.download_repo("repo_url", "target_dir");
+    }
     if (program["--build"] == true) {
         read_pieScript("build.pie"); //program.get<std::string>("--build")
     }
