@@ -121,7 +121,11 @@ int main(int argc, char *argv[]) {
         .default_value(false) //std::string("build.pie")
         .implicit_value(true);
         //.nargs(1);
-
+    program.add_argument("--testcurl")
+        .help("test curl")
+        .default_value(false)
+        .implicit_value(true);
+        //.nargs(1);
     program.add_argument("-d", "--download")
         // .action([=](const std::string &repo_url, const std::string& target_dir)
         // {
@@ -170,6 +174,10 @@ int main(int argc, char *argv[]) {
         Network net;
         net.download_repo(repo_url, target_dir);
         //net.download_repo("repo_url", "target_dir");
+    }
+    if (program.is_used("--testcurl")) {
+        Network net;
+        net.testcurl();
     }
     if (program["--build"] == true) {
         read_pieScript("build.pie"); //program.get<std::string>("--build")

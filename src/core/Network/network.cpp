@@ -22,6 +22,50 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
 }
 
 
+int Network::testcurl() {
+  CURL *curl;
+  CURLcode res;
+
+  // Initialize curl
+  curl = curl_easy_init();
+  if (!curl) {
+    std::cerr << "Error: curl_easy_init() failed." << std::endl;
+    return 1;
+  }
+
+  // Set URL to a publicly accessible server that doesn't require authentication
+  curl_easy_setopt(curl, CURLOPT_URL, "https://www.example.com"); // Replace with a valid URL
+
+  // Set options to avoid downloading data
+  curl_easy_setopt(curl, CURLOPT_NOBODY, 1L); // Request headers only
+  curl_easy_setopt(curl, CURLOPT_HEADER, 0L); // Suppress header output
+
+  // Perform the request
+  res = curl_easy_perform(curl);
+
+  // Check for errors
+  if (res != CURLE_OK) {
+    std::cerr << "Error: curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+    return 1;
+  }
+
+  // Check response code
+  long http_code;
+  curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+  if (http_code != 200) {
+    std::cerr << "Error: Received HTTP code " << http_code << " (expected 200)." << std::endl;
+    return 1;
+  }
+
+  // Success!
+  std::cout << "libcurl seems to be working correctly." << std::endl;
+
+  // Cleanup
+  curl_easy_cleanup(curl);
+  return 0;
+}
+
+
 std::string Network::download_repo(const std::string& repo_url, const std::string& target_dir) {
     // Initialize libcurl
     curl_global_init(CURL_GLOBAL_ALL);

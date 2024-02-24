@@ -25,6 +25,8 @@ std::string get(const std::string& url);
 
 std::string download_repo(const std::string& repo_url, const std::string& target_dir);
 
+int testcurl();
+
 };
 
 #endif
