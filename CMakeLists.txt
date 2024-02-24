@@ -7,6 +7,15 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -g")
 
+# Set Lua include and library paths
+IF (WIN32)
+  set(LUA_INCLUDE_DIR "C:/msys64/mingw64/include/lua5.3")
+  set(LUA_LIBRARIES "C:/msys64/mingw64/lib/liblua5.3.a")
+  set(LUA_LIBRARIESDLL "C:/msys64/mingw64/bin/lua53.dll")
+  
+ELSE()
+  # set stuff for other systems
+ENDIF()
 
 set(SOURCE
     src/main.cpp
@@ -18,6 +27,8 @@ set(SOURCE
 set(CURL_LIBRARY "-lcurl")
 # Find CURL
 find_package(CURL REQUIRED)
+# Find Lua libraries
+find_package(Lua REQUIRED)
 
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/liblua54.a DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/lua54.dll DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -31,8 +42,11 @@ add_executable(pie ${SOURCE})
 
 # Link the CURL "include" directory
 include_directories(${CURL_INCLUDE_DIR})
-# Link the CURL libraries
-target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES} -lmingw32)
+# Link the CURL libraries and Lua libraries
+target_link_libraries(pie ${CURL_LIBRARIES} ${LUA_LIBRARIES} ${LUA_LIBRARIESDLL} -lmingw32)
+
+include_directories(${LUA_INCLUDE_DIR})
+
 
 #target_link_directories(pie PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
