@@ -70,6 +70,15 @@ public:
         }
         return false;
     }
+    /**
+     * Checks if the given character is present in the capsules list.
+     *
+     * @param ch the character to check
+     *
+     * @return true if the character is present in the capsules list, false otherwise
+     *
+     * @throws None
+     */
     inline bool is_capsule_open(char ch) const {
         for(auto tu : capsules) {
             auto [o, c] = tu;
