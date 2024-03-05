@@ -1,40 +1,27 @@
 #include "LuaManager.h"
+#include <memory>
+#include <mutex>
 
-LuaManager* LuaManager::instance_ = nullptr;
+std::unique_ptr<LuaManager> LuaManager::instance_;
+std::mutex LuaManager::instance_mutex_;
 
-/**
- * Constructor for the LuaManager class.
- *
- * @return void
- *
- * @throws None
- */
 LuaManager::LuaManager() {
     L_ = luaL_newstate();
     luaL_openlibs(L_);
 }
 
-/**
- * Destructor for the LuaManager class.
- *
- * @throws None
- */
 LuaManager::~LuaManager() {
     lua_close(L_);
 }
 
 LuaManager& LuaManager::getInstance() {
+    std::lock_guard<std::mutex> lock(instance_mutex_);
     if (!instance_) {
-        instance_ = new LuaManager();
+        instance_ = std::make_unique<LuaManager>();
     }
     return *instance_;
 }
 
-/**
- * Returns the Lua state.
- *
- * @return The Lua state.
- */
 lua_State* LuaManager::getState() const {
     return L_;
 }

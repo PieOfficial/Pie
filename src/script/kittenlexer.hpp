@@ -7,6 +7,7 @@
 #include <tuple>
 #include <stack>
 #include <map>
+#include <memory> // For std::unique_ptr
 
 struct KittenToken {
     std::string src;  // The content of the token
@@ -102,7 +103,6 @@ public:
     inline bool is_lineskip(char c) const {
         return lineskips.count(c) > 0;
     }
-
 
     inline KittenLexer& add_capsule(char open, char close) {
         if(!is_capsule(open,close))
@@ -328,6 +328,9 @@ public:
     inline operator bool() {
         return !failbit;
     }
+
+
+
 };
 
 #endif

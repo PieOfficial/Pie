@@ -144,6 +144,11 @@ struct ScriptNullValue : public ScriptValue {
     std::string to_printable() const noexcept override {
         return "null";
     }
+    /**
+     * A description of the entire C++ function.
+     *
+     * @return description of return value
+     */
     std::string to_string() const noexcept override {
         return to_printable();
     }

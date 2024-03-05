@@ -22,12 +22,13 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
 }
 
 
+/**
+ * Test the libcurl library by sending a request to a publicly accessible server.
+ * @return 0 if the test is successful, 1 if there is an error.
+ */
 int Network::testcurl() {
-  CURL *curl;
-  CURLcode res;
-
   // Initialize curl
-  curl = curl_easy_init();
+  CURL *curl = curl_easy_init();
   if (!curl) {
     std::cerr << "Error: curl_easy_init() failed." << std::endl;
     return 1;
@@ -41,7 +42,7 @@ int Network::testcurl() {
   curl_easy_setopt(curl, CURLOPT_HEADER, 0L); // Suppress header output
 
   // Perform the request
-  res = curl_easy_perform(curl);
+  CURLcode res = curl_easy_perform(curl);
 
   // Check for errors
   if (res != CURLE_OK) {
@@ -96,30 +97,34 @@ std::string Network::download_repo(const std::string& repo_url, const std::strin
         std::filesystem::create_directories(target_dir);
 
         // Open a file to store the downloaded data
-        std::ofstream file("downloaded_file.zip", std::ios::binary);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file);
+        std::ofstream file(target_dir + "/downloaded_file.zip", std::ios::binary);
 
-        // Perform the download
-        CURLcode res = curl_easy_perform(curl);
+        if (file.is_open()) {
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file);
 
-        // Close the file
-        file.close();
+            // Perform the download
+            CURLcode res = curl_easy_perform(curl);
 
-        if (res != CURLE_OK) {
-            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+            // Close the file
+            file.close();
+
+            if (res != CURLE_OK) {
+                std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+            } else {
+                std::cout << "File downloaded successfully." << std::endl;
+                file_name = target_dir + "/downloaded_file.zip";
+            }
+        } else {
+            std::cerr << "Error opening file for writing: " << target_dir + "/downloaded_file.zip" << std::endl;
         }
-
-        // Move the downloaded file to the target directory
-        try {
-            std::filesystem::copy_file("downloaded_file.zip", target_dir + "/downloaded_file.zip");
-        } catch (std::filesystem::filesystem_error& err) {
-          std::cerr << "Error moving file: " << err.what() << std::endl;
-        }
-        file_name = "downloaded_file.zip";
         curl_easy_cleanup(curl);
+    } else {
+        std::cerr << "Error initializing curl handle." << std::endl;
     }
 
+    // Clean up libcurl
     curl_global_cleanup();
+
     return file_name;
 }
 

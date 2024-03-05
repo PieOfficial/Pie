@@ -8,21 +8,18 @@
 #include <unordered_set>
 #include <chrono>
 
-
 #include <lua.hpp>
 #include <lauxlib.h>
 #include <lualib.h>
-
+#include "script/LuaManager.h"
 
 #ifdef _WIN32
 #include <windows.h>
-//#include "unistd.h"
-//#include <process.h>
 #elif __linux__
 #include <unistd.h>
 #endif
 
-// #include <sys/wait.h>
+
 #include <sys/types.h>
 
 
@@ -46,12 +43,8 @@ void read_pieScript(std::string filename) {
     // Start the timer
     high_resolution_clock::time_point start = high_resolution_clock::now();
 
-    std::string r;
     std::ifstream ifile(filename);
-    while (ifile.good())
-        r += ifile.get();
-    if (r != "")
-        r.pop_back();
+    std::string r(std::istreambuf_iterator<char>(ifile), {});
 
     // creates a new interpreter instance
     carescript::Interpreter interpreter;
@@ -59,7 +52,7 @@ void read_pieScript(std::string filename) {
     // save the current state as id 0
     interpreter.save(0);
 
-    // This code executes when an error occurs
+    // This code runs when things go wrong, like a burnt pie
     interpreter.on_error([](carescript::Interpreter &interp) {
         // #ifdef _WIN32
         // // Beep at 200 Hz for 500 milliseconds.
@@ -109,6 +102,76 @@ void read_pieScript(std::string filename) {
     std::cout << "CPU time used: " << elapsed.count() << " ms\n";
 }
 
+void read_pieScript_TIMEING(std::string filename, int numMeasurements) {
+    long long totalElapsedTime = 0;
+
+    for (int i = 0; i < numMeasurements; ++i) {
+    // Start the timer
+        high_resolution_clock::time_point start = high_resolution_clock::now();
+
+        std::ifstream ifile(filename);
+        std::string r(std::istreambuf_iterator<char>(ifile), {});
+
+        // creates a new interpreter instance
+        carescript::Interpreter interpreter;
+
+        // save the current state as id 0
+        interpreter.save(0);
+
+        // This code executes when an error occurs
+        interpreter.on_error([](carescript::Interpreter &interp) {
+            // #ifdef _WIN32
+            // // Beep at 200 Hz for 500 milliseconds.
+            // Beep(200, 500);
+
+            // // Beep at 400 Hz for 500 milliseconds.
+            // Beep(400, 500);
+
+            // // Beep at 600 Hz for 500 milliseconds.
+            // Beep(600, 500);
+            // // Define an array of frequencies to use.
+            // int frequencies[] = {500, 1000, 1500, 2000};
+
+            // // Loop through the frequencies and play a beep sound at each one.
+            // for (int i = 0; i < sizeof(frequencies) / sizeof(frequencies[0]); i++) {
+            //     Beep(frequencies[i], 100); // Beep for 100 milliseconds.
+            // }
+            // #endif
+            std::cout << RED << interp.error() << NC << std::endl; 
+        });
+
+        // pre processes the code
+        interpreter.pre_process(r);
+
+        // runs the "main" label
+        interpreter.run();
+        // // runs the label "some_label" with the arguments 1, 2 and 3
+        // interpreter.run("some_label",1,2,3);
+
+        // // runs the label "label_with_return" and unwraps the return value
+        // carescript::ScriptVariable value = interpreter.run("label_with_return").get_value();
+
+        interpreter.load(0); // loads the saved state with id 0
+
+        // Stop the timer
+        high_resolution_clock::time_point end = high_resolution_clock::now();
+
+        // Calculate the time elapsed
+        duration<double, milli> elapsed = end - start;
+
+        // Subtract the overhead of the benchmark itself
+        duration<double, milli> overhead = duration_cast<milliseconds>(
+            high_resolution_clock::now() - high_resolution_clock::now());
+        elapsed -= overhead;
+        totalElapsedTime += elapsed.count();
+    }
+
+    // Calculate and print the average time
+    long long averageElapsedTime = totalElapsedTime / numMeasurements;
+    std::cout << "Average CPU time used: " << averageElapsedTime << " microseconds\n";
+}
+
+
 
 int main(int argc, char *argv[]) {
     // 1. Create a Lua state
@@ -127,21 +190,15 @@ int main(int argc, char *argv[]) {
         .implicit_value(true);
         //.nargs(1);
     program.add_argument("-d", "--download")
-        // .action([=](const std::string &repo_url, const std::string& target_dir)
-        // {
-        //     std::cout << repo_url << std::endl;
-        //     Network net;
-        //     net.download_repo(repo_url, target_dir);
-        // })
         .nargs(2)
         //.scan<'g', std::string>()
         //.default_value(std::string("none"))
         .help("Downloads a repo (repository) in the root dir");
 
-    program.add_argument("-l", "--lua")
+    program.add_argument("--testlua")
         .action([&](const std::string &value)
         {
-            lua_State* L = luaL_newstate();
+            lua_State* L = LuaManager::getInstance().getState();
             luaL_openlibs(L);  // Load standard Lua libraries
             luaL_loadstring(L, "print('Hello from Lua!')");
             int result = lua_pcall(L, 0, LUA_MULTRET, 0);
